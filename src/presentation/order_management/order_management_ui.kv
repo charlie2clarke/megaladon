@@ -1,0 +1,13 @@
+#:kivy 1.11.0
+# Having to use v1.11.0 because of bug relating to MDDataTable
+
+<OrderManagmentScreen>:
+    name: 'order_management'
+
+    MDTextField:
+        hint_text: 'Order Management'
+        helper_text: 'or click on forgot username'
+        helper_text_mode: 'on_focus'
+        pos_hint: {'center_x': 0.5, 'center_y': 0.55}
+        size_hint_x: None
+        width: 300
