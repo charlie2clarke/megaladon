@@ -8,11 +8,13 @@ class MainApp(MDApp):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.screen = Builder.load_file("./presentation/main.kv")
+        self.order_management_screen = OrderManagmentScreen()
 
     def build(self):
         self.theme_cls.primary_palette = "Green"  # "Purple", "Red"
         sm = ScreenManager()
         sm.add_widget(OrderManagmentScreen(name='order_management'))
+        self.order_management_screen.load_table_data()
         return self.screen
 
 

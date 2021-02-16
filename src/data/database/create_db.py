@@ -1,7 +1,8 @@
-import sqlite3
-from sqlite3.dbapi2 import Connection, Cursor
-from sqlite3 import Error
 import os
+import sqlite3
+from sqlite3 import Error
+from sqlite3.dbapi2 import Connection, Cursor
+
 
 def create_connection(db_file):
     """ create a database connection to the SQLite database
@@ -28,9 +29,6 @@ def create_table(conn, create_table_sql):
     """
     try:
         c = conn.cursor()
-        test = c.execute("PRAGMA foreign_keys")
-        test = test.fetchall()
-        print(test)
         c.execute(create_table_sql)
         conn.commit()
     except Error:
@@ -40,7 +38,6 @@ def create_table(conn, create_table_sql):
 def main():
     base_dir = os.path.dirname(__file__)
     database = os.path.join(base_dir, 'OnlineStore.db')
-    # database = r"C:\sqlite\db\pythonsqlite.db"
 
     # Have created a separate table for addresses, because it is possible for
     # customers to have more than one registered address
@@ -110,7 +107,7 @@ def main():
                                     product_name integer,
                                     product_description integer,
                                     individual_price real,
-                                    quantity integer,
+                                    stock_count integer,
                                     warehouse_location text
                                     );"""
 
