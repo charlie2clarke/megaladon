@@ -43,11 +43,9 @@ def main():
     # customers to have more than one registered address
     sql_create_address_table = """ CREATE TABLE IF NOT EXISTS Address (
                                         id integer PRIMARY KEY AUTOINCREMENT,
-                                        house_name text,
-                                        house_number integer,
-                                        street_name text NOT NULL,
-                                        locality_name text NOT NULL,
-                                        town_name text NOT NULL,
+                                        line_one text NOT NULL,
+                                        line_two text,
+                                        city text NOT NULL,
                                         postcode text NOT NULL
                                     );"""
 
@@ -82,11 +80,17 @@ def main():
                                     status_description text NOT NULL
                                     );"""
 
+    sql_create_postage_table = """ CREATE TABLE IF NOT EXISTS Postage (
+                                    id integer PRIMARY KEY AUTOINCREMENT,
+                                    postage_description text NOT NULL
+                                    );"""
+
     sql_create_purchase_table = """ CREATE TABLE IF NOT EXISTS Purchase (
                                     id integer PRIMARY KEY AUTOINCREMENT,
                                     platform_id integer,
                                     customer_id integer,
                                     status_id integer,
+                                    postage_id integer,
                                     created_date text NOT NULL,
                                     dispatched_date text,
                                     completed_date text,
@@ -146,6 +150,9 @@ def main():
 
         # create status table
         create_table(conn, sql_create_status_table)
+
+        # create postage table
+        create_table(conn, sql_create_postage_table)
 
         # create purchase table
         create_table(conn, sql_create_purchase_table)

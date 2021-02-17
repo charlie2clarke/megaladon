@@ -1,10 +1,10 @@
-from data.data_access.data_access import DataAccess
+from .order import Order
 
-class Order:
+class Table:
     def __init__(self):
-        self.data_access = DataAccess()
-
-    def get_order_table_data(self):
+        self.order = Order()
+        
+    def get_table_data(self):
         # Item, Quantity, Customer Name, Status
         queryset = self.data_access.execute('''
             SELECT
@@ -21,4 +21,3 @@ class Order:
                 INNER JOIN Status ON Status.id = Purchase.status_id
         ''', None)
         return queryset.fetchall()
-

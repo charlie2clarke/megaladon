@@ -19,8 +19,8 @@ conn.commit()
 
 # Populate Customer table
 c.execute("""
-    INSERT INTO Address (house_name, street_name, locality_name, town_name, postcode)
-        VALUES ('Summer Cottage', 'Church Road', 'Langley', 'Exeter', 'EX1 802')  
+    INSERT INTO Address (line_one, line_two, city, postcode)
+        VALUES ('Summer Cottage Langley', 'Church Road', 'Exeter', 'EX1 802')  
 """)
 conn.commit()
 
@@ -59,6 +59,20 @@ c.execute("""
 """)
 conn.commit()
 
+# Populate Postage table
+c.execute("""
+    INSERT INTO Postage (postage_description)
+        VALUES ('1st Class')  
+""")
+conn.commit()
+
+# Populate Postage table
+c.execute("""
+    INSERT INTO Postage (postage_description)
+        VALUES ('2nd Class')  
+""")
+conn.commit()
+
 # Populate Product table
 c.execute("""
     INSERT INTO Product (product_name, product_description, individual_price, stock_count, warehouse_location)
@@ -68,8 +82,8 @@ conn.commit()
 
 # Populate Purchase table
 c.execute("""
-    INSERT INTO Purchase (platform_id, customer_id, status_id, created_date)
-        VALUES (1, 1, 1, '18/02/2021')
+    INSERT INTO Purchase (platform_id, customer_id, status_id, postage_id, created_date)
+        VALUES (1, 1, 1, 1, '18/02/2021')
 """)
 conn.commit()
 

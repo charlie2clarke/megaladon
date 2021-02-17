@@ -8,7 +8,8 @@ class DataAccess:
         self.cur = self.conn.cursor()
     
     def create_connection(self):
-        base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', 'database'))
+        # base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '/', 'database'))
+        base_dir = os.path.join(os.path.dirname( __file__ ), 'database')
         database_file = os.path.join(base_dir, 'OnlineStore.db')
         return sqlite3.connect(database_file)
 
