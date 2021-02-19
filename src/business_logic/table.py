@@ -1,23 +1,27 @@
-from .order import Order
+from .initialise import Initialise
+
 
 class Table:
     def __init__(self):
-        self.order = Order()
+        self.initialise = Initialise()
+        self.get_table_data()
         
     def get_table_data(self):
-        # Item, Quantity, Customer Name, Status
-        queryset = self.data_access.execute('''
-            SELECT
-                Product.product_name, 
-                Purchase_Product.quantity, 
-                Customer.first_name, 
-                Customer.last_name, 
-                Status.status_description
-            FROM
-                Product
-                INNER JOIN Purchase_Product ON Purchase_Product.product_id = Product.id
-                INNER JOIN Purchase ON Purchase.id = Purchase_Product.purchase_id
-                INNER JOIN Customer ON Customer.id = Purchase.customer_id
-                INNER JOIN Status ON Status.id = Purchase.status_id
-        ''', None)
-        return queryset.fetchall()
+        # order number, customer, order date, status, total gross
+        table_data = []
+        order_number = 0
+
+        for order in self.initialise.orders:
+            order_number += 1
+            row_data = []
+            order_obj = self.initialise.orders[order]
+            customer_name = order_obj.customer.first_name + ' ' + order_obj.customer.last_name
+
+            row_data.append(order_number)
+            row_data.append(customer_name)
+            row_data.append(order_obj.created_date)
+            row_data.append(order_obj.status)
+            row_data.append('£' + str(order_obj.product.get_total(order_obj.product.items_quantity_price)))
+            table_data.append(tuple(row_data))
+        
+        return table_data

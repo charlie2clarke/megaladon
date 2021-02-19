@@ -15,14 +15,22 @@ class Order:
             completed_date, 
             postage
         ):
-        self.query = Query()
+        self._query = Query()
         self.product = product
         self.customer = customer
-        self.status = status 
-        self.created_date = created_date
-        self.dispatched_date = dispatched_date
-        self.completed_date = completed_date
-        self.postage = postage
+        self._status = status
+        self._created_date = created_date
+        self._dispatched_date = dispatched_date
+        self._completed_date = completed_date
+        self._postage = postage
+
+    @property
+    def created_date(self):
+        return self._created_date
+
+    @property
+    def status(self):
+        return self._status
 
     
 

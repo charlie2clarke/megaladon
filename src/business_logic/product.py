@@ -1,12 +1,22 @@
 class Product:
-    instances = []
+    def __init__(self, items_quantity_price):
+        self._items_quantity_price = items_quantity_price
 
-    def __init__(self, items_and_quantity):
-        self.items_and_quantity = items_and_quantity
-        self.__class__.instances.append(self)
+    @property
+    def items_quantity_price(self):
+        return self._items_quantity_price
+
+    def get_total(self, items_quantity_price):
+        total = 0
+
+        for dictionary in items_quantity_price:
+            total = total + (dictionary['quantity'] * dictionary['individual_price'])
+
+        return total
+
     
-    @classmethod
-    def list_all_objects(cls):
-        for instance in cls.instances:
-            print(instance)
+    # @items_quantity_price.setter
+    # def items_quantity_price(self, new_items_quantity_price):
+    #     self.items_quantity_price = new_items_quantity_price
+    
 

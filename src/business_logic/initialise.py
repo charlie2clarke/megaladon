@@ -12,22 +12,21 @@ class Initialise:
         self.initialise_classes()
 
     def initialise_classes(self):
-        # return self.all_data
         order = []
 
-        def append_order(item, quantity):
+        def append_order(item, quantity, individual_price):
             order_entry = {}
 
             order_entry['item'] = item
             order_entry['quantity'] = quantity
-            
+            order_entry['individual_price'] = individual_price
+          
             return order_entry
 
         for i in range(len(self.all_data) + 1):
-            order_entry = {}
             if i == 0:
                 # first item - append
-                order.append(append_order(self.all_data[i][1], self.all_data[i][2]))
+                order.append(append_order(self.all_data[i][1], self.all_data[i][2], self.all_data[i][15]))
 
                 address = Address(line_one=self.all_data[i][6], line_two=self.all_data[i][7], \
                     city=self.all_data[i][8], postcode=self.all_data[i][9])
@@ -35,9 +34,9 @@ class Initialise:
                     last_name=self.all_data[i][4], email=self.all_data[i][5])
             elif i == len(self.all_data):
                 # is the same order as the one before it
-                order.append(append_order(self.all_data[i-1][1], self.all_data[i-1][2]))
+                order.append(append_order(self.all_data[i-1][1], self.all_data[i-1][2], self.all_data[i-1][15]))
                 # then submit
-                product = Product(items_and_quantity=order)
+                product = Product(items_quantity_price=order)
                 address = Address(line_one=self.all_data[i-1][6], line_two=self.all_data[i-1][7], \
                     city=self.all_data[i-1][8], postcode=self.all_data[i-1][9])
                 customer = Customer(address=address, first_name=self.all_data[i-1][3], \
@@ -47,10 +46,11 @@ class Initialise:
                         completed_date=self.all_data[i-1][13], postage=self.all_data[i-1][14])   
             elif self.all_data[i][0] == self.all_data[i-1][0]:
                 # is the same order as the one before it
-                order.append(append_order(self.all_data[i][1], self.all_data[i][2]))
+                order.append(append_order(self.all_data[i][1], self.all_data[i][2], self.all_data[i][15]))
             else:
-                # new order
-                product = Product(items_and_quantity=order)
+                # new order, so firstly submit the previous order and then add details of new order, unless the
+                # next item is the last one
+                product = Product(items_quantity_price=order)
                 address = Address(line_one=self.all_data[i-1][6], line_two=self.all_data[i-1][7], \
                     city=self.all_data[i-1][8], postcode=self.all_data[i-1][9])
                 customer = Customer(address=address, first_name=self.all_data[i-1][3], \
@@ -61,7 +61,7 @@ class Initialise:
                 order = []
 
                 if i + 1 != len(self.all_data):
-                    order.append(append_order(self.all_data[i][1], self.all_data[i][1]))
+                    order.append(append_order(self.all_data[i][1], self.all_data[i][1], self.all_data[i][15]))
 
         return self.orders
 
