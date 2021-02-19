@@ -19,8 +19,22 @@ conn.commit()
 
 # Populate Customer table
 c.execute("""
+    INSERT INTO Customer (first_name, last_name, email)
+        VALUES ('gerald', 'khan', 'gezza@gmail.com')  
+""")
+conn.commit()
+
+# Populate Address table
+c.execute("""
     INSERT INTO Address (line_one, line_two, city, postcode)
         VALUES ('Summer Cottage Langley', 'Church Road', 'Exeter', 'EX1 802')  
+""")
+conn.commit()
+
+# Populate Address table
+c.execute("""
+    INSERT INTO Address (line_one, line_two, city, postcode)
+        VALUES ('420', 'Dark Road', 'Exeter', 'EX8 804')  
 """)
 conn.commit()
 
@@ -28,6 +42,13 @@ conn.commit()
 c.execute("""
     INSERT INTO Customer_Address (customer_id, address_id)
         VALUES (1, 1)  
+""")
+conn.commit()
+
+# Populate Customer_Address table
+c.execute("""
+    INSERT INTO Customer_Address (customer_id, address_id)
+        VALUES (2, 2)  
 """)
 conn.commit()
 
@@ -80,6 +101,13 @@ c.execute("""
 """)
 conn.commit()
 
+# Populate Product table
+c.execute("""
+    INSERT INTO Product (product_name, product_description, individual_price, stock_count, warehouse_location)
+        VALUES ('Trousers', '70s flairs', 18.28, 12, 'aisle 2 shelf 4')  
+""")
+conn.commit()
+
 # Populate Purchase table
 c.execute("""
     INSERT INTO Purchase (platform_id, customer_id, status_id, postage_id, created_date)
@@ -87,9 +115,30 @@ c.execute("""
 """)
 conn.commit()
 
+# Populate Purchase table
+c.execute("""
+    INSERT INTO Purchase (platform_id, customer_id, status_id, postage_id, created_date)
+        VALUES (1, 2, 1, 1, '22/02/2021')
+""")
+conn.commit()
+
 # Populate Purchase_Product table
 c.execute("""
     INSERT INTO Purchase_Product (purchase_id, product_id, quantity) 
         VALUES (1, 1, 1)
+""")
+conn.commit()
+
+# Populate Purchase_Product table
+c.execute("""
+    INSERT INTO Purchase_Product (purchase_id, product_id, quantity) 
+        VALUES (1, 2, 2)
+""")
+conn.commit()
+
+# Populate Purchase_Product table
+c.execute("""
+    INSERT INTO Purchase_Product (purchase_id, product_id, quantity) 
+        VALUES (2, 1, 2)
 """)
 conn.commit()

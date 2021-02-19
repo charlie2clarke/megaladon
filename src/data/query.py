@@ -7,6 +7,7 @@ class Query:
     def get_all_data(self):
         queryset = self.data_access.execute('''
             SELECT
+                Purchase_Product.purchase_id,
                 Product.product_name,
                 Purchase_Product.quantity,
                 Customer.first_name,
@@ -30,5 +31,7 @@ class Query:
                 INNER JOIN Customer ON Customer.id = Purchase.customer_id
                 INNER JOIN Customer_Address ON Customer_Address.customer_id = Customer.id
                 INNER JOIN Address ON Address.id = Customer_Address.address_id
+            ORDER BY
+                Purchase.id
         ''', None)
         return queryset.fetchall()

@@ -1,8 +1,8 @@
-from data.data_access.data_access import DataAccess
+from data.data_access import DataAccess
 from .product import Product
 from .customer import Customer
 from .platform import Platform
-from data.queries.query import Query
+from data.query import Query
 
 class Order:
     def __init__(
@@ -16,9 +16,8 @@ class Order:
             postage
         ):
         self.query = Query()
-        self.product = Product()
-        self.customer = Customer()
-        self.platform = Platform()
+        self.product = product
+        self.customer = customer
         self.status = status 
         self.created_date = created_date
         self.dispatched_date = dispatched_date
