@@ -17,7 +17,7 @@ class Table:
             order_obj = self.initialise.orders[order]
             customer_name = order_obj.customer.first_name + ' ' + order_obj.customer.last_name
 
-            row_data.append(order_number)
+            row_data.append(str(order_number))
             row_data.append(customer_name)
             row_data.append(order_obj.created_date)
             row_data.append(order_obj.status)
