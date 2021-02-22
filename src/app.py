@@ -9,7 +9,6 @@ class MainApp(MDApp):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.screen = Builder.load_file("./presentation/main.kv")
-        self.order_management_view = OrderManagementScreen()
 
     def build(self):
         self.theme_cls.primary_palette = "Green"  # "Purple", "Red"
@@ -18,7 +17,6 @@ class MainApp(MDApp):
         sm.add_widget(OrderManagementScreen(name='order_management'))
         # Clock.schedule_once(self.order_management_view.create_order_table)
         return self.screen
-
 
 if __name__ == "__main__":
     # Window.fullscreen = True

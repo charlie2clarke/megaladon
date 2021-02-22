@@ -2,11 +2,21 @@
 #:include ./presentation/order_management/order_management_ui.kv
 # Having to use v1.11.0 because of bug relating to MDDataTable
 
+<Toolbar@AnchorLayout>:
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'top'
+        MDToolbar:
+            title: 'Order Management App'
+            specific_text_color: app.theme_cls.accent_color
+            right_action_items: [['dots-vertical', lambda x: app.navigation_drawer()]]
+            elevation: 9
+
 ScreenManager:
     OrderManagementScreen:
+        Toolbar:
 
-<OrderManagementScreen>:
-    name: 'order_management'
-    OrderManagementContent:
+
+    
 
     

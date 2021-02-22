@@ -1,10 +1,23 @@
 #:kivy 1.11.0
 # Having to use v1.11.0 because of bug relating to MDDataTable
 
-<OrderManagementContent@GridLayout>:
+<OrderManagementScreen>:
+    name: 'order_management'
+
     GridLayout:
         cols: 1
         pos_hint: {'top': 0.85}
 
         ScrollView:
             id: table_container
+
+    MDRectangleFlatButton:
+        id: picking_list_button
+        text:"Picking List"
+        pos_hint:{'center_x': 0.1, 'center_y': 0.85}
+        on_release: root.handle_picking_click()
+
+
+    
+
+        
