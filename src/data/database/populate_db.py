@@ -24,6 +24,13 @@ c.execute("""
 """)
 conn.commit()
 
+# Populate Customer table
+c.execute("""
+    INSERT INTO Customer (first_name, last_name, email)
+        VALUES ('stephanie', 'blower', 'steph@hotmail.co.uk')  
+""")
+conn.commit()
+
 # Populate Address table
 c.execute("""
     INSERT INTO Address (line_one, line_two, city, postcode)
@@ -38,6 +45,13 @@ c.execute("""
 """)
 conn.commit()
 
+# Populate Address table
+c.execute("""
+    INSERT INTO Address (line_one, line_two, city, postcode)
+        VALUES ('24', 'Long Lane', 'Birmingham', 'BM2 703')  
+""")
+conn.commit()
+
 # Populate Customer_Address table
 c.execute("""
     INSERT INTO Customer_Address (customer_id, address_id)
@@ -49,6 +63,13 @@ conn.commit()
 c.execute("""
     INSERT INTO Customer_Address (customer_id, address_id)
         VALUES (2, 2)  
+""")
+conn.commit()
+
+# Populate Customer_Address table
+c.execute("""
+    INSERT INTO Customer_Address (customer_id, address_id)
+        VALUES (3, 3)  
 """)
 conn.commit()
 
@@ -96,15 +117,22 @@ conn.commit()
 
 # Populate Product table
 c.execute("""
-    INSERT INTO Product (product_name, product_description, individual_price, stock_count, warehouse_location)
-        VALUES ('Hat', 'Yellow crotched hat', 12.69, 4, 'aisle 1 shelf 2')  
+    INSERT INTO Product (product_name, product_description, individual_price, stock_count, aisle, shelf)
+        VALUES ('Hat', 'Yellow crotched hat', 12.69, 4, 1, 2)  
 """)
 conn.commit()
 
 # Populate Product table
 c.execute("""
-    INSERT INTO Product (product_name, product_description, individual_price, stock_count, warehouse_location)
-        VALUES ('Trousers', '70s flairs', 18.28, 12, 'aisle 2 shelf 4')  
+    INSERT INTO Product (product_name, product_description, individual_price, stock_count, aisle, shelf)
+        VALUES ('Trousers', '70s flairs', 18.28, 12, 2, 4)  
+""")
+conn.commit()
+
+# Populate Product table
+c.execute("""
+    INSERT INTO Product (product_name, product_description, individual_price, stock_count, aisle, shelf)
+        VALUES ('Jacket', 'Cowboy frilly thing', 48.82, 8, 2, 6)  
 """)
 conn.commit()
 
@@ -119,6 +147,13 @@ conn.commit()
 c.execute("""
     INSERT INTO Purchase (platform_id, customer_id, status_id, postage_id, created_date)
         VALUES (1, 2, 1, 1, '22/02/2021')
+""")
+conn.commit()
+
+# Populate Purchase table
+c.execute("""
+    INSERT INTO Purchase (platform_id, customer_id, status_id, postage_id, created_date)
+        VALUES (1, 3, 2, 2, '14/02/2021')
 """)
 conn.commit()
 
@@ -140,5 +175,12 @@ conn.commit()
 c.execute("""
     INSERT INTO Purchase_Product (purchase_id, product_id, quantity) 
         VALUES (2, 1, 2)
+""")
+conn.commit()
+
+# Populate Purchase_Product table
+c.execute("""
+    INSERT INTO Purchase_Product (purchase_id, product_id, quantity) 
+        VALUES (3, 3, 2)
 """)
 conn.commit()

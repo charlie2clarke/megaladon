@@ -21,7 +21,7 @@ class Table:
             row_data.append(customer_name)
             row_data.append(order_obj.created_date)
             row_data.append(order_obj.status)
-            row_data.append('£' + str(order_obj.product.get_total(order_obj.product.items_quantity_price)))
+            row_data.append('£' + str(order_obj.product.get_total(order_obj.product.ordered_items)))
             table_data.append(tuple(row_data))
         
         return table_data

@@ -1,22 +1,23 @@
 class Product:
-    def __init__(self, items_quantity_price):
-        self._items_quantity_price = items_quantity_price
+    def __init__(self, ordered_items):
+        self._ordered_items = ordered_items
 
     @property
-    def items_quantity_price(self):
-        return self._items_quantity_price
+    def ordered_items(self):
+        return self._ordered_items
 
-    def get_total(self, items_quantity_price):
+
+    def get_total(self, ordered_items):
         total = 0
 
-        for dictionary in items_quantity_price:
+        for dictionary in ordered_items:
             total = total + (dictionary['quantity'] * dictionary['individual_price'])
 
         return total
 
     
-    # @items_quantity_price.setter
-    # def items_quantity_price(self, new_items_quantity_price):
-    #     self.items_quantity_price = new_items_quantity_price
+    # @ordered_items.setter
+    # def ordered_items(self, new_ordered_items):
+    #     self.ordered_items = new_ordered_items
     
 

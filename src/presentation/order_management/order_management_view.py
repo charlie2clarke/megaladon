@@ -3,17 +3,19 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivymd.uix.datatables import MDDataTable
 from kivy.metrics import dp
-from business_logic.table import Table
 from kivy.clock import Clock
 from kivymd.uix.button import MDRectangleFlatIconButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDRectangleFlatButton
+from business_logic.table import Table
+from business_logic.picking_list import PickingList
 # from ..components.data_table import DataTable
 
 
 class OrderManagementScreen(Screen):
     def __init__(self, **kwargs):
         super(OrderManagementScreen, self).__init__(**kwargs)
+        self.picking_list = PickingList()
         Clock.schedule_once(self.create_order_table)
      
     def create_order_table(self, clock):
@@ -40,7 +42,7 @@ class OrderManagementScreen(Screen):
         self.ids.table_container.add_widget(self.order_table)
 
     def handle_picking_click(self):
-        print("NO WAY")
+        self.picking_list.create_picking_list()
 
     def on_row_press(self, instance_table, instance_row):
         '''Called when a table row is clicked. SHOULD DISPLAY MORE DETAILS OF THE ORDER CLICKED ON '''

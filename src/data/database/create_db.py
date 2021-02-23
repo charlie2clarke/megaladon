@@ -112,7 +112,8 @@ def main():
                                     product_description integer,
                                     individual_price real,
                                     stock_count integer,
-                                    warehouse_location text
+                                    aisle integer,
+                                    shelf integer
                                     );"""
 
     sql_create_purchase_product_table = """ CREATE TABLE IF NOT EXISTS Purchase_Product (

@@ -22,7 +22,10 @@ class Query:
                 Purchase.dispatched_date,
                 Purchase.completed_date,
                 Postage.postage_description,
-                Product.individual_price
+                Product.individual_price,
+                Product.id,
+                Product.aisle,
+                Product.shelf
             FROM
                 Product
                 INNER JOIN Purchase_Product ON Purchase_Product.product_id = Product.id
