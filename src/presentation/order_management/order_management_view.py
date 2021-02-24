@@ -25,7 +25,7 @@ class OrderManagementScreen(Screen):
         # order number, customer, order date, status, total gross
         self.order_table = MDDataTable(
             size_hint=(1, 1),
-            # use_pagination=True,
+            use_pagination=True,
             check=True,
             column_data=[
                 ('No.', dp(30)),

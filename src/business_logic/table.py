@@ -1,4 +1,5 @@
 from .initialise import Initialise
+import asyncio
 
 
 class Table:

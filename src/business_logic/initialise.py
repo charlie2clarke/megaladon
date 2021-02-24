@@ -3,13 +3,60 @@ from .product import Product
 from .address import Address
 from .customer import Customer
 from .order import Order
+import json
+import requests
+import datetime
 
 class Initialise:
+    initialise_counter = 0
+
     def __init__(self):
+        Initialise.initialise_counter += 1
         self.query = Query()
         self.all_data = self.query.get_all_data()
         self.orders = {}
+        self.new_orders = {}
+
+        if Initialise.initialise_counter == 1:
+            self.get_new_orders()
         self.initialise_classes()
+
+    def get_new_orders(self):
+        url = 'http://localhost:8080'
+
+        def get_name(order):
+            return order['name'].split(' ', 1)[0], order['name'].split(' ', 1)[1]
+
+        def get_address(order):
+            address = order['address'].split(', ')
+            if len(address) == 2:
+                # No line two of address
+                return address[0], None, address[1]
+            else:
+                return address[0], address[1], address[2]
+
+        try:
+            request = requests.get(url)
+            new_orders_string = request.text
+            self.new_orders = json.loads(new_orders_string)
+
+            if len(self.new_orders) != 0:
+                for order in self.new_orders:
+                    first_name, last_name = get_name(order)
+                    # first_name = order['name'].split(' ', 1)[0]
+                    # last_name = order['name'].split(' ', 1)[1]
+                    address_line_one, address_line_two, city = get_address(order)
+                    # address_line_one = order['address'].split(' ')[0]
+                    # address_line_two = order['address'].split(' ')[1]
+                    self.query.add_order(order['item'], first_name, last_name, address_line_one, address_line_two, city)
+
+        except requests.exceptions.ConnectionError as error_c:
+            print("There seems to be a network problem " + error_c)
+        except requests.exceptions.HTTPError as error_h:
+            print("HTTP error: " + error_h)
+        
+        
+
 
     def initialise_classes(self):
         order = []

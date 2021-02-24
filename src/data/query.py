@@ -1,9 +1,57 @@
+import datetime
+from random import randint
 from .data_access import DataAccess
 
 class Query:
     def __init__(self):
         self.data_access = DataAccess()
-    
+
+    def add_order(self, item, first_name, last_name, line_one, line_two, city):
+        
+        def get_product_id(item):
+            queryset = self.data_access.execute('''
+                SELECT
+                    Product.id
+                FROM
+                    Product
+                WHERE
+                    Product.product_name=?
+            ''', (item,))
+            return queryset.fetchone()
+        
+        customer = self.data_access.execute('''
+            INSERT INTO Customer(first_name, last_name)
+            VALUES(?, ?)
+        ''', (first_name, last_name))
+        
+        address = self.data_access.execute('''
+            INSERT INTO Address(line_one, line_two, city)
+            VALUES(?, ?, ?)
+        ''', (line_one, line_two, city))
+
+        last_customer = customer.lastrowid
+        last_address = address.lastrowid
+
+        self.data_access.execute('''
+            INSERT INTO Customer_Address(customer_id, address_id)
+            VALUES(?, ?)
+        ''', (last_customer, last_address))
+
+        random_postage = randint(1, 2)
+        date_now = str(datetime.datetime.strptime('01/08/2015', '%d/%m/%Y').date())
+
+        purchase = self.data_access.execute('''
+            INSERT INTO Purchase(platform_id, customer_id, status_id, postage_id, created_date)
+            VALUES(?, ?, ?, ?, ?)
+        ''', (1, last_customer, 1, random_postage, date_now))
+
+        product_id = get_product_id(item)[0]
+
+        self.data_access.execute('''
+            INSERT INTO Purchase_Product(purchase_id, product_id, quantity)
+            VALUES(?, ?, ?)
+        ''', (purchase.lastrowid, product_id, 1))
+
     def get_all_data(self):
         queryset = self.data_access.execute('''
             SELECT

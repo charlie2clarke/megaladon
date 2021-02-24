@@ -46,14 +46,14 @@ def main():
                                         line_one text NOT NULL,
                                         line_two text,
                                         city text NOT NULL,
-                                        postcode text NOT NULL
+                                        postcode text
                                     );"""
 
     sql_create_customer_table = """ CREATE TABLE IF NOT EXISTS Customer (
                                         id integer PRIMARY KEY AUTOINCREMENT,
                                         first_name text NOT NULL,
                                         last_name text NOT NULL,
-                                        email text NOT NULL
+                                        email text
                                     );"""
 
     sql_create_customer_address_table = """ CREATE TABLE IF NOT EXISTS Customer_Address (

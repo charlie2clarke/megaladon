@@ -30,6 +30,6 @@ class PickingList:
             else:
                 grouped_items.append(product)
                 grouped_items_position += 1
-        self.pdf.write_pdf()
-        return grouped_items
+        self.pdf.write_pdf(grouped_items)
+        # return grouped_items
             
