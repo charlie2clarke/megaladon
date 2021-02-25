@@ -6,9 +6,10 @@ class Query:
     def __init__(self):
         self.data_access = DataAccess()
 
-    def add_order(self, item, first_name, last_name, line_one, line_two, city):
+    def add_order(self, items_and_quantity, first_name, last_name, line_one, line_two, city):
         
-        def get_product_id(item):
+        def get_product_id(item_and_quantity):
+            # Replacing item name with id
             queryset = self.data_access.execute('''
                 SELECT
                     Product.id
@@ -16,8 +17,12 @@ class Query:
                     Product
                 WHERE
                     Product.product_name=?
-            ''', (item,))
-            return queryset.fetchone()
+            ''', (item_and_quantity['item'],))
+            item_id = queryset.fetchone()
+            item_id = item_id[0]
+            item_and_quantity['item'] = item_id
+
+            return item_and_quantity
         
         customer = self.data_access.execute('''
             INSERT INTO Customer(first_name, last_name)
@@ -45,12 +50,13 @@ class Query:
             VALUES(?, ?, ?, ?, ?)
         ''', (1, last_customer, 1, random_postage, date_now))
 
-        product_id = get_product_id(item)[0]
+        items_and_quantity = [get_product_id(product) for product in items_and_quantity]
 
-        self.data_access.execute('''
-            INSERT INTO Purchase_Product(purchase_id, product_id, quantity)
-            VALUES(?, ?, ?)
-        ''', (purchase.lastrowid, product_id, 1))
+        for item in items_and_quantity:
+            self.data_access.execute('''
+                INSERT INTO Purchase_Product(purchase_id, product_id, quantity)
+                VALUES(?, ?, ?)
+            ''', (purchase.lastrowid, item['item'], item['quantity']))
 
     def get_all_data(self):
         queryset = self.data_access.execute('''
@@ -84,6 +90,6 @@ class Query:
                 INNER JOIN Customer_Address ON Customer_Address.customer_id = Customer.id
                 INNER JOIN Address ON Address.id = Customer_Address.address_id
             ORDER BY
-                Purchase.id
+                Status.id
         ''', None)
         return queryset.fetchall()
