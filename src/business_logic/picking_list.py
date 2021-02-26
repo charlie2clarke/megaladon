@@ -18,6 +18,7 @@ class PickingList:
 
         grouped_items = []
         grouped_items_position = -1
+        # is assuming there are items to be picked
 
         for index, product in enumerate(ordered_items):
             previous = ordered_items[index-1]
@@ -30,6 +31,9 @@ class PickingList:
             else:
                 grouped_items.append(product)
                 grouped_items_position += 1
-        self.pdf.write_pdf(grouped_items)
+        headers = list(grouped_items[0].keys())
+        rows = [list(item.values()) for item in grouped_items]
+        data = [headers] + rows
+        self.pdf.write_pdf(data)
         # return grouped_items
             

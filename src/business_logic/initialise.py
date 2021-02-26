@@ -14,12 +14,12 @@ class Initialise:
     def __init__(self):
         Initialise.initialise_counter += 1
         self.query = Query()
-        self.all_data = self.query.get_all_data()
         self.orders = {}  # I should make this a class variable?!
         self.new_orders = {}
 
         if Initialise.initialise_counter == 1:
             self.get_new_orders()
+        self.all_data = self.query.get_all_data()
         self.initialise_classes()  # I should make this a class variable?!
 
     def get_new_orders(self):
@@ -38,9 +38,9 @@ class Initialise:
 
         def get_items_and_quantity(item_counter):
             items_and_quantity = []
-            new_order_entry = {}
 
             for item in item_counter:
+                new_order_entry = {}
                 print(item)
                 new_order_entry['item'], new_order_entry['quantity'] = item[0], item[1]
                 items_and_quantity.append(new_order_entry)
@@ -75,11 +75,18 @@ class Initialise:
                         # new_order.append(append_order(order['item'], first_name, last_name, address_line_one, address_line_two, city))
                         items.append(request_json[index]['item'])
                     elif index == len(request_json):
-                        items.append(request_json[index - 1]['item'])
-
-                        items_and_quantity = get_items_and_quantity(item_counter)
-                        self.query.add_order(items_and_quantity, previous_first_name, previous_last_name,
+                        if len(items) > 1 or len(request_json) == 1:
+                            # The last one is for the same order as previous
+                            items_and_quantity = get_items_and_quantity(item_counter)
+                            self.query.add_order(items_and_quantity, previous_first_name, previous_last_name,
                                              previous_address_line_one, previous_address_line_two, previous_city)
+                        else:
+                            # last order is for a new person
+                            items.append(request_json[index - 1]['item'])
+                            item_counter = Counter(items).items()
+                            items_and_quantity = get_items_and_quantity(item_counter)
+                            self.query.add_order(items_and_quantity, previous_first_name, previous_last_name,
+                                                previous_address_line_one, previous_address_line_two, previous_city)
                     elif first_name == previous_first_name and last_name == previous_last_name and \
                         address_line_one == previous_address_line_one and address_line_two == previous_address_line_two \
                             and city == previous_city:
