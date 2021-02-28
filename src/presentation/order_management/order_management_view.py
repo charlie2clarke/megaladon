@@ -10,6 +10,7 @@ from kivymd.uix.button import MDRectangleFlatButton
 from business_logic.table import Table
 from business_logic.picking_list import PickingList
 from business_logic.packaging_list import PackagingList
+from business_logic.address_label import AddressLabel
 # from ..components.data_table import DataTable
 
 
@@ -18,6 +19,7 @@ class OrderManagementScreen(Screen):
         super(OrderManagementScreen, self).__init__(**kwargs)
         self.picking_list = PickingList()
         self.packaging_list = PackagingList()
+        self.address_label = AddressLabel()
         self.rows_checked = []
         Clock.schedule_once(self.create_order_table)
      
@@ -50,6 +52,9 @@ class OrderManagementScreen(Screen):
 
     def handle_packaging_click(self):
         self.packaging_list.create_packaging_list(self.rows_checked)
+
+    def handle_address_click(self):
+        self.address_label.create_address_label(self.rows_checked)
 
     def on_row_press(self, instance_table, instance_row):
         '''Called when a table row is clicked. SHOULD DISPLAY MORE DETAILS OF THE ORDER CLICKED ON '''

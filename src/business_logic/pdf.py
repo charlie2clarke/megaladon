@@ -80,3 +80,12 @@ class Pdf:
 
         self.document.output(name='Packaging List ' + address[1] + ' ' + str(number) + '.pdf')
 
+    def write_address_label(self, address, number):
+        self.create_page()
+
+        for item in address:
+            self.document.cell(
+                self.column_width, 2 * self.text_height, str(item), border=0)
+            self.document.ln(self.text_height * 1.5)
+
+        self.document.output(name='Address Label ' + address[0] + ' ' + str(number) + '.pdf')
