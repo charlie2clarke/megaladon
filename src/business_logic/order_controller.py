@@ -8,19 +8,20 @@ from .customer import Customer
 from .order import Order
 
 
-class Initialise:
-    initialise_counter = 0
+class OrderController:
+    order_controller_counter = 0
+    orders = {}
 
     def __init__(self):
-        Initialise.initialise_counter += 1
+        OrderController.order_controller_counter += 1
         self.query = Query()
-        self.orders = {}  # I should make this a class variable?!
+        # self.orders = {} # I should make this a class variable?!
         self.new_orders = {}
 
-        if Initialise.initialise_counter == 1:
+        if OrderController.order_controller_counter == 1:
             self.get_new_orders()
-        self.all_data = self.query.get_all_data()
-        self.initialise_classes()  # I should make this a class variable?!
+            self.all_data = self.query.get_all_data()
+            self.initialise_orders()  # I should make this a class variable?!
 
     def get_new_orders(self):
         url = 'http://localhost:8080'
@@ -105,7 +106,7 @@ class Initialise:
         except requests.exceptions.HTTPError as error_h:
             print("HTTP error: " + error_h)
 
-    def initialise_classes(self):
+    def initialise_orders(self):
         order = []
 
         def append_order(item_id, item, quantity, individual_price, aisle, shelf):
@@ -140,7 +141,7 @@ class Initialise:
                                   city=self.all_data[i-1][8], postcode=self.all_data[i-1][9])
                 customer = Customer(address=address, first_name=self.all_data[i-1][3],
                                     last_name=self.all_data[i-1][4], email=self.all_data[i-1][5])
-                self.orders["order_" + str(i-1)] = Order(product=product, customer=customer, status=self.all_data[i-1][10],
+                OrderController.orders["order_" + str(i-1)] = Order(product=product, customer=customer, status=self.all_data[i-1][10],
                                                          created_date=self.all_data[i -
                                                                                     1][11], dispatched_date=self.all_data[i-1][12],
                                                          completed_date=self.all_data[i-1][13], postage=self.all_data[i-1][14])
@@ -156,7 +157,7 @@ class Initialise:
                                   city=self.all_data[i-1][8], postcode=self.all_data[i-1][9])
                 customer = Customer(address=address, first_name=self.all_data[i-1][3],
                                     last_name=self.all_data[i-1][4], email=self.all_data[i-1][5])
-                self.orders["order_" + str(i-1)] = Order(product=product, customer=customer, status=self.all_data[i-1][10],
+                OrderController.orders["order_" + str(i-1)] = Order(product=product, customer=customer, status=self.all_data[i-1][10],
                                                          created_date=self.all_data[i -
                                                                                     1][11], dispatched_date=self.all_data[i-1][12],
                                                          completed_date=self.all_data[i-1][13], postage=self.all_data[i-1][14])
@@ -166,4 +167,3 @@ class Initialise:
                     order.append(append_order(self.all_data[i][16], self.all_data[i][1], self.all_data[i][2],
                                               self.all_data[i][15], self.all_data[i][17], self.all_data[i][18]))
 
-        return self.orders

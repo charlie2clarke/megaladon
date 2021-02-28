@@ -1,10 +1,10 @@
-from .initialise import Initialise
+from .order_controller import OrderController
 from .order import Order
 from .pdf import Pdf
 
 class PickingList:
     def __init__(self):
-        self.initialise = Initialise()
+        self.order_controller = OrderController()
         self.pdf = Pdf()
         self.ids = []
         self.product_descriptions = []
@@ -12,7 +12,7 @@ class PickingList:
 
     def create_picking_list(self):
         # product id, aisle, shelf, description, quantity, space for tick
-        awaiting_orders = [order for order in self.initialise.orders.values() if order.status == "Awaiting"]
+        awaiting_orders = [order for order in self.order_controller.orders.values() if order.status == "Awaiting"]
         ordered_items = [product for order in awaiting_orders for product in order.product.ordered_items]
         ordered_items.sort(key=lambda product: (product['aisle'], product['shelf']))
 
@@ -34,6 +34,5 @@ class PickingList:
         headers = list(grouped_items[0].keys())
         rows = [list(item.values()) for item in grouped_items]
         data = [headers] + rows
-        self.pdf.write_pdf(data)
-        # return grouped_items
+        self.pdf.write_picking_list(data)
             

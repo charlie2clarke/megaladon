@@ -9,6 +9,7 @@ from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDRectangleFlatButton
 from business_logic.table import Table
 from business_logic.picking_list import PickingList
+from business_logic.packaging_list import PackagingList
 # from ..components.data_table import DataTable
 
 
@@ -16,16 +17,18 @@ class OrderManagementScreen(Screen):
     def __init__(self, **kwargs):
         super(OrderManagementScreen, self).__init__(**kwargs)
         self.picking_list = PickingList()
+        self.packaging_list = PackagingList()
+        self.rows_checked = []
         Clock.schedule_once(self.create_order_table)
      
     def create_order_table(self, clock):
         self.table = Table()
         self.row_data = self.table.get_table_data()
+        row_number = len(self.row_data)
 
         # order number, customer, order date, status, total gross
         self.order_table = MDDataTable(
             size_hint=(1, 0.85),
-            use_pagination=True,
             check=True,
             column_data=[
                 ('No.', dp(30)),
@@ -34,7 +37,8 @@ class OrderManagementScreen(Screen):
                 ('Status', dp(30)),
                 ('Total Gross', dp(30)),
             ],
-            row_data=self.row_data
+            row_data=self.row_data,
+            rows_num=row_number
         )
         self.order_table.bind(on_row_press=self.on_row_press)
         self.order_table.bind(on_check_press=self.on_check_press)
@@ -44,15 +48,20 @@ class OrderManagementScreen(Screen):
     def handle_picking_click(self):
         self.picking_list.create_picking_list()
 
+    def handle_packaging_click(self):
+        self.packaging_list.create_packaging_list(self.rows_checked)
+
     def on_row_press(self, instance_table, instance_row):
         '''Called when a table row is clicked. SHOULD DISPLAY MORE DETAILS OF THE ORDER CLICKED ON '''
+        print("ROW")
         print(instance_table, instance_row)
-        self.render_dialog('Title', 'some body text')
+        # self.render_dialog('Title', 'some body text')
 
     def on_check_press(self, instance_table, current_row):
         '''Called when the check box in the table row is checked. WILL HANDLE CREATING A PACKING LIST, ADDRESS LABELS, 
         UPDATING STATUS AND CREATING PERSONALISED EMAILS FOR EACH BOX CLICKED '''
-
+        self.rows_checked.append(current_row)
+        print("CHEKC")
         print(instance_table, current_row)
 
     def render_dialog(self, title, text):

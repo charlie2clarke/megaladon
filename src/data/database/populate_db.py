@@ -11,6 +11,28 @@ conn = sqlite3.connect(database_file)
 c : Cursor = conn.cursor()
 
 
+# # Populate Customer table
+# c.execute("""
+#     INSERT INTO Customer (first_name, last_name)
+#         VALUES ('George', 'Clooney')  
+# """)
+# conn.commit()
+
+# # Populate Address table
+# c.execute("""
+#     INSERT INTO Address (line_one, city)
+#         VALUES ('98 Prospect Park', 'Newcastle')  
+# """)
+# conn.commit()
+
+# # Populate Address table
+# c.execute("""
+#     INSERT INTO Customer_Address (customer_id, address_id)
+#         VALUES (1, 1)  
+# """)
+# conn.commit()
+
+
 # Populate Platform table
 c.execute("""
     INSERT INTO Platform (platform_name, user_token)

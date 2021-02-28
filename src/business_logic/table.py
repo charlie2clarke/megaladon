@@ -1,21 +1,20 @@
-from .initialise import Initialise
-import asyncio
+from .order_controller import OrderController
 
 
 class Table:
     def __init__(self):
-        self.initialise = Initialise()
-        self.get_table_data()
+        self.order_controller = OrderController()
+        # self.get_table_data()
         
     def get_table_data(self):
         # order number, customer, order date, status, total gross
         table_data = []
         order_number = 0
 
-        for order in self.initialise.orders:
+        for order in self.order_controller.orders:
             order_number += 1
             row_data = []
-            order_obj = self.initialise.orders[order]
+            order_obj = self.order_controller.orders[order]
             customer_name = order_obj.customer.first_name + ' ' + order_obj.customer.last_name
 
             row_data.append(str(order_number))

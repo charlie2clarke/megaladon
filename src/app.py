@@ -12,7 +12,7 @@ class MainApp(MDApp):
 
     def build(self):
         self.theme_cls.primary_palette = "Green"  # "Purple", "Red"
-        # The below screen manager calling/instantiating the initialise.py class again, (the init method of this did also)
+        # The below screen manager calling/instantiating the OrderController.py class again, (the init method of this did also)
         sm = ScreenManager()
         sm.add_widget(OrderManagementScreen(name='order_management'))
         # Clock.schedule_once(self.order_management_view.create_order_table)
