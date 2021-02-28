@@ -141,7 +141,7 @@ class OrderController:
                                   city=self.all_data[i-1][8], postcode=self.all_data[i-1][9])
                 customer = Customer(address=address, first_name=self.all_data[i-1][3],
                                     last_name=self.all_data[i-1][4], email=self.all_data[i-1][5])
-                OrderController.orders["order_" + str(i-1)] = Order(product=product, customer=customer, status=self.all_data[i-1][10],
+                OrderController.orders["order_" + str(self.all_data[i-1][0])] = Order(product=product, customer=customer, status=self.all_data[i-1][10],
                                                          created_date=self.all_data[i -
                                                                                     1][11], dispatched_date=self.all_data[i-1][12],
                                                          completed_date=self.all_data[i-1][13], postage=self.all_data[i-1][14])
@@ -157,7 +157,7 @@ class OrderController:
                                   city=self.all_data[i-1][8], postcode=self.all_data[i-1][9])
                 customer = Customer(address=address, first_name=self.all_data[i-1][3],
                                     last_name=self.all_data[i-1][4], email=self.all_data[i-1][5])
-                OrderController.orders["order_" + str(i-1)] = Order(product=product, customer=customer, status=self.all_data[i-1][10],
+                OrderController.orders["order_" + str(self.all_data[i-1][0])] = Order(product=product, customer=customer, status=self.all_data[i-1][10],
                                                          created_date=self.all_data[i -
                                                                                     1][11], dispatched_date=self.all_data[i-1][12],
                                                          completed_date=self.all_data[i-1][13], postage=self.all_data[i-1][14])

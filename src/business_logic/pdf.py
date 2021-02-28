@@ -3,8 +3,10 @@ from fpdf import FPDF
 
 
 class Pdf:
-    def __init__(self):
-        # self.order_management_view = OrderManagementScreen()
+    # def __init__(self):
+    #     # self.order_management_view = OrderManagementScreen()
+        
+    def create_page(self):
         self.document = FPDF(format='A4', orientation='L', unit='in')
         self.document.add_page()
         self.document.set_font('Arial', '', 14)
@@ -33,6 +35,7 @@ class Pdf:
             self.document.ln(self.text_height * 2)
 
     def write_picking_list(self, data):
+        self.create_page()
         # product id, aisle, shelf, description, quantity, space for tick
 
         # Writing title
@@ -47,7 +50,8 @@ class Pdf:
         self.document.output(name='Picking List.pdf')
         # self.order_management_view.render_dialog('Picking List Successfully Created!', 'You can find the pdf document in the root of directory of this project')
 
-    def write_packaging_list(self, date, address, items):
+    def write_packaging_list(self, date, address, items, number):
+        self.create_page()
         sender_details = ['Sender:', 'Awesome Organisation Inc.',
                           'Building Abbey Road', 'London', 'L2C 802', '12345 678910']
 
@@ -74,5 +78,5 @@ class Pdf:
         self.document.ln(self.text_height * 2.5)
         self.create_table(items)
 
-        self.document.output(name='Packaging List ' + address[1] + '.pdf')
+        self.document.output(name='Packaging List ' + address[1] + ' ' + str(number) + '.pdf')
 

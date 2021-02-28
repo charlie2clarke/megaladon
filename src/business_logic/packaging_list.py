@@ -25,6 +25,6 @@ class PackagingList:
 
             items.insert(0, ['Item', 'Quantity'])
 
-            self.pdf.write_packaging_list(date, address, items)
+            self.pdf.write_packaging_list(date, address, items, order[0])
 
-            return date, address, items
+
