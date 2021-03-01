@@ -1,11 +1,14 @@
 from fpdf import FPDF
+from presentation.components.dialog import Dialog
+import os, shutil
+from constants import ADDRESS_LABELS_DIR, SENDER_DETAILS
 # from presentation.order_management.order_management_view import OrderManagementScreen
 
 
 class Pdf:
-    # def __init__(self):
-    #     # self.order_management_view = OrderManagementScreen()
-        
+    def __init__(self):
+        self.dialog = Dialog()
+
     def create_page(self):
         self.document = FPDF(format='A4', orientation='L', unit='in')
         self.document.add_page()
@@ -48,27 +51,25 @@ class Pdf:
         self.create_table(data)
 
         self.document.output(name='Picking List.pdf')
-        # self.order_management_view.render_dialog('Picking List Successfully Created!', 'You can find the pdf document in the root of directory of this project')
 
     def write_packaging_list(self, date, address, items, number):
         self.create_page()
-        sender_details = ['Sender:', 'Awesome Organisation Inc.',
-                          'Building Abbey Road', 'London', 'L2C 802', '12345 678910']
+        # sender_details = ['Sender:', 'Awesome Organisation Inc.',
+        #                   'Building Abbey Road', 'London', 'L2C 802', '12345 678910']
 
         self.document.set_x(-30)
-        for index, item in enumerate(sender_details):
+        for index, item in enumerate(SENDER_DETAILS):
             self.set_text_style(index)
             self.document.cell(
                 self.column_width, 2 * self.text_height, str(item), border=0)
             self.document.ln(self.text_height * 1.5)
-        
+
         self.document.ln(0.5)
         self.document.cell(
             self.column_width, 2 * self.text_height, 'Invoice No. xxxxxxxx                                             Date: ' + date, border=0)
 
         self.document.ln(0.5)
-        
-        
+
         for index, item in enumerate(address):
             self.set_text_style(index)
             self.document.cell(
@@ -78,9 +79,12 @@ class Pdf:
         self.document.ln(self.text_height * 2.5)
         self.create_table(items)
 
-        self.document.output(name='Packaging List ' + address[1] + ' ' + str(number) + '.pdf')
+        self.document.output(name='Packaging List ' +
+                             address[1] + ' ' + str(number) + '.pdf')
 
     def write_address_label(self, address, number):
+        self.clear_directory(ADDRESS_LABELS_DIR)
+
         self.create_page()
 
         for item in address:
@@ -88,4 +92,19 @@ class Pdf:
                 self.column_width, 2 * self.text_height, str(item), border=0)
             self.document.ln(self.text_height * 1.5)
 
-        self.document.output(name='Address Label ' + address[0] + ' ' + str(number) + '.pdf')
+        file_name = ADDRESS_LABELS_DIR + '/Address Label ' + \
+            address[0] + ' ' + str(number) + '.pdf'
+        self.document.output(name=file_name, dest='F')
+        self.dialog.render_dialog('The Address PDFs are in the address_labels directory. Select printer...',
+                                  None, True)
+
+    def clear_directory(self, folder):
+        for filename in os.listdir(folder):
+            file_path = os.path.join(folder, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print('Failed to delete %s. Reason: %s' % (file_path, e))

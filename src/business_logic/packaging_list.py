@@ -8,8 +8,6 @@ class PackagingList:
         self.orders_to_package = []
 
     def create_packaging_list(self, orders_selected):
-        print(orders_selected)
-
         # date array, address array, items array
         for index, order in enumerate(orders_selected):
             order_number = int(order[0]) - 1

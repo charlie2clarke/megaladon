@@ -42,7 +42,6 @@ class OrderController:
 
             for item in item_counter:
                 new_order_entry = {}
-                print(item)
                 new_order_entry['item'], new_order_entry['quantity'] = item[0], item[1]
                 items_and_quantity.append(new_order_entry)
             
@@ -102,9 +101,9 @@ class OrderController:
                             items.append(request_json[index]['item'])
 
         except requests.exceptions.ConnectionError as error_c:
-            print("There seems to be a network problem " + error_c)
+            print("There seems to be a network problem " + str(error_c))
         except requests.exceptions.HTTPError as error_h:
-            print("HTTP error: " + error_h)
+            print("HTTP error: " + str(error_h))
 
     def initialise_orders(self):
         order = []

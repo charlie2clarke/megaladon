@@ -11,6 +11,7 @@ from business_logic.table import Table
 from business_logic.picking_list import PickingList
 from business_logic.packaging_list import PackagingList
 from business_logic.address_label import AddressLabel
+from ..components.dialog import Dialog
 # from ..components.data_table import DataTable
 
 
@@ -20,9 +21,10 @@ class OrderManagementScreen(Screen):
         self.picking_list = PickingList()
         self.packaging_list = PackagingList()
         self.address_label = AddressLabel()
+        self.dialog = Dialog()
         self.rows_checked = []
         Clock.schedule_once(self.create_order_table)
-     
+    
     def create_order_table(self, clock):
         self.table = Table()
         self.row_data = self.table.get_table_data()
@@ -60,6 +62,7 @@ class OrderManagementScreen(Screen):
         '''Called when a table row is clicked. SHOULD DISPLAY MORE DETAILS OF THE ORDER CLICKED ON '''
         print("ROW")
         print(instance_table, instance_row)
+        # self.dialog.render_dialog('Title', 'some text')
         # self.render_dialog('Title', 'some body text')
 
     def on_check_press(self, instance_table, current_row):
@@ -69,16 +72,4 @@ class OrderManagementScreen(Screen):
         print("CHEKC")
         print(instance_table, current_row)
 
-    def render_dialog(self, title, text):
-        self.dialog = MDDialog(
-            title=title,
-            size_hint=(0.7, 1),
-            text=text,
-            buttons=[
-                MDRectangleFlatButton(text='Close', on_release=self.close_dialog),
-            ]
-        )
-        self.dialog.open()
-
-    def close_dialog(self, obj):
-        self.dialog.dismiss()
+    

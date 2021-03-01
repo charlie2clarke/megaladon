@@ -1,6 +1,7 @@
 from .order_controller import OrderController
 from .pdf import Pdf
 
+
 class AddressLabel:
     def __init__(self):
         self.order_controller = OrderController()
