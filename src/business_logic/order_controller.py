@@ -6,17 +6,23 @@ from .product import Product
 from .address import Address
 from .customer import Customer
 from .order import Order
+from .email import Email
+from constants import URL
 
 
 class OrderController:
     order_controller_counter = 0
     orders = {}
+    screen_instance = None
 
-    def __init__(self):
+    def __init__(self, screen_instance):
         OrderController.order_controller_counter += 1
         self.query = Query()
-        # self.orders = {} # I should make this a class variable?!
+        self.email = Email()
         self.new_orders = {}
+
+        if screen_instance is not None:
+            OrderController.screen_instance = screen_instance
 
         if OrderController.order_controller_counter == 1:
             self.get_new_orders()
@@ -24,7 +30,6 @@ class OrderController:
             self.initialise_orders()  # I should make this a class variable?!
 
     def get_new_orders(self):
-        url = 'http://localhost:8080'
 
         def get_name(order):
             return order['name'].split(' ', 1)[0], order['name'].split(' ', 1)[1]
@@ -37,6 +42,9 @@ class OrderController:
             else:
                 return address[0], address[1], address[2]
 
+        def get_fake_email(first_name, last_name):
+            return first_name.lower() + '.' + last_name.lower() + '@gmail.com'
+
         def get_items_and_quantity(item_counter):
             items_and_quantity = []
 
@@ -44,11 +52,11 @@ class OrderController:
                 new_order_entry = {}
                 new_order_entry['item'], new_order_entry['quantity'] = item[0], item[1]
                 items_and_quantity.append(new_order_entry)
-            
+
             return items_and_quantity
 
         try:
-            request = requests.get(url)
+            request = requests.get(URL)
             request_string = request.text
             request_json = json.loads(request_string)
 
@@ -72,29 +80,37 @@ class OrderController:
                             previous_order)
 
                     if index == 0:
-                        # new_order.append(append_order(order['item'], first_name, last_name, address_line_one, address_line_two, city))
                         items.append(request_json[index]['item'])
                     elif index == len(request_json):
                         if len(items) > 1 or len(request_json) == 1:
                             # The last one is for the same order as previous
-                            items_and_quantity = get_items_and_quantity(item_counter)
+                            items_and_quantity = get_items_and_quantity(
+                                item_counter)
+                            fake_email = get_fake_email(
+                                previous_first_name, previous_last_name)
                             self.query.add_order(items_and_quantity, previous_first_name, previous_last_name,
-                                             previous_address_line_one, previous_address_line_two, previous_city)
+                                                 previous_address_line_one, previous_address_line_two, previous_city, fake_email)
                         else:
                             # last order is for a new person
                             items.append(request_json[index - 1]['item'])
                             item_counter = Counter(items).items()
-                            items_and_quantity = get_items_and_quantity(item_counter)
+                            items_and_quantity = get_items_and_quantity(
+                                item_counter)
+                            fake_email = get_fake_email(
+                                previous_first_name, previous_last_name)
                             self.query.add_order(items_and_quantity, previous_first_name, previous_last_name,
-                                                previous_address_line_one, previous_address_line_two, previous_city)
+                                                 previous_address_line_one, previous_address_line_two, previous_city, fake_email)
                     elif first_name == previous_first_name and last_name == previous_last_name and \
                         address_line_one == previous_address_line_one and address_line_two == previous_address_line_two \
                             and city == previous_city:
                         items.append(request_json[index]['item'])
                     else:
-                        items_and_quantity = get_items_and_quantity(item_counter)
+                        items_and_quantity = get_items_and_quantity(
+                            item_counter)
+                        fake_email = get_fake_email(
+                            previous_first_name, previous_last_name)
                         self.query.add_order(items_and_quantity, previous_first_name, previous_last_name,
-                                             previous_address_line_one, previous_address_line_two, previous_city)
+                                             previous_address_line_one, previous_address_line_two, previous_city, fake_email)
 
                         items = []
                         if index + 1 != len(request_json):
@@ -141,9 +157,9 @@ class OrderController:
                 customer = Customer(address=address, first_name=self.all_data[i-1][3],
                                     last_name=self.all_data[i-1][4], email=self.all_data[i-1][5])
                 OrderController.orders["order_" + str(self.all_data[i-1][0])] = Order(product=product, customer=customer, status=self.all_data[i-1][10],
-                                                         created_date=self.all_data[i -
-                                                                                    1][11], dispatched_date=self.all_data[i-1][12],
-                                                         completed_date=self.all_data[i-1][13], postage=self.all_data[i-1][14])
+                                                                                      created_date=self.all_data[i -
+                                                                                                                 1][11], dispatched_date=self.all_data[i-1][12],
+                                                                                      completed_date=self.all_data[i-1][13], postage=self.all_data[i-1][14])
             elif self.all_data[i][0] == self.all_data[i-1][0]:
                 # is the same order as the one before it
                 order.append(append_order(self.all_data[i][16], self.all_data[i][1], self.all_data[i][2],
@@ -157,12 +173,25 @@ class OrderController:
                 customer = Customer(address=address, first_name=self.all_data[i-1][3],
                                     last_name=self.all_data[i-1][4], email=self.all_data[i-1][5])
                 OrderController.orders["order_" + str(self.all_data[i-1][0])] = Order(product=product, customer=customer, status=self.all_data[i-1][10],
-                                                         created_date=self.all_data[i -
-                                                                                    1][11], dispatched_date=self.all_data[i-1][12],
-                                                         completed_date=self.all_data[i-1][13], postage=self.all_data[i-1][14])
+                                                                                      created_date=self.all_data[i -
+                                                                                                                 1][11], dispatched_date=self.all_data[i-1][12],
+                                                                                      completed_date=self.all_data[i-1][13], postage=self.all_data[i-1][14])
                 order = []
 
                 if i + 1 != len(self.all_data):
                     order.append(append_order(self.all_data[i][16], self.all_data[i][1], self.all_data[i][2],
                                               self.all_data[i][15], self.all_data[i][17], self.all_data[i][18]))
 
+    def update_order(self, orders_selected):
+        for order in orders_selected:
+            if order[3] == 'Awaiting':
+                OrderController.orders['order_' +
+                                       order[0]].status = 'Dispatched'
+            elif order[3] == 'Dispatched':
+                OrderController.orders['order_' + order[0]].status = 'Complete'
+            self.email.update_status(
+                OrderController.orders['order_' + order[0]])
+        # Have to import here to avoid circular import issues - will always be present if containing all system tiers in one application
+        from presentation.order_management.order_management_view import OrderManagementScreen
+        OrderManagementScreen.create_order_table(
+            OrderController.screen_instance, True, None)

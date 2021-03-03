@@ -2,7 +2,6 @@ from fpdf import FPDF
 from presentation.components.dialog import Dialog
 import os, shutil
 from constants import ADDRESS_LABELS_DIR, SENDER_DETAILS
-# from presentation.order_management.order_management_view import OrderManagementScreen
 
 
 class Pdf:

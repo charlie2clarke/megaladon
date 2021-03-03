@@ -7,7 +7,7 @@ class Query:
     def __init__(self):
         self.data_access = DataAccess()
 
-    def add_order(self, items_and_quantity, first_name, last_name, line_one, line_two, city):
+    def add_order(self, items_and_quantity, first_name, last_name, line_one, line_two, city, email):
 
         def get_product_id(item_and_quantity):
             # Replacing item name with id
@@ -44,9 +44,9 @@ class Query:
 
         if existing_customer is None:
             customer = self.data_access.execute('''
-                INSERT INTO Customer(first_name, last_name)
-                VALUES(?, ?)
-            ''', (first_name, last_name))
+                INSERT INTO Customer(first_name, last_name, email)
+                VALUES(?, ?, ?)
+            ''', (first_name, last_name, email))
 
             address = self.data_access.execute('''
                 INSERT INTO Address(line_one, line_two, city)
@@ -68,6 +68,8 @@ class Query:
         # Sometimes unique constraint fails because it is possible that the previous order in 
         # the database is for the same customer which would make the row about to be added a duplicate
 
+        # Think is because in items and quantity, there are product which aren't grouped 
+
         purchase = self.data_access.execute('''
             INSERT INTO Purchase(platform_id, customer_id, status_id, postage_id, created_date)
             VALUES(?, ?, ?, ?, ?)
@@ -76,11 +78,13 @@ class Query:
         items_and_quantity = [get_product_id(
             product) for product in items_and_quantity]
 
+        last_purchase = purchase.lastrowid
+
         for item in items_and_quantity:
             self.data_access.execute('''
                 INSERT INTO Purchase_Product(purchase_id, product_id, quantity)
                 VALUES(?, ?, ?)
-            ''', (purchase.lastrowid, item['item'], item['quantity']))
+            ''', (last_purchase, item['item'], item['quantity']))
 
     def get_all_data(self):
         queryset = self.data_access.execute('''

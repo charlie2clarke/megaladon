@@ -1,15 +1,16 @@
 from kivymd.uix.datatables import MDDataTable
 
-class DataTable(MDDataTable):
-    def __init__(self, column_data, row_data):
-        self.column_data = column_data
-        self.row_data = row_data
 
-    def create_data_table(self):
-        return MDDataTable(
+class DataTable:
+    def create_data_table(self, column_data, row_data, on_row_press, on_check_press):
+        table = MDDataTable(
             size_hint=(1, 0.85),
-            # use_pagination=True,
             check=True,
-            column_data=self.column_data,
-            row_data=self.row_data
+            column_data=column_data,
+            row_data=row_data,
+            rows_num=len(row_data)
         )
+        table.bind(on_row_press=on_row_press)
+        table.bind(on_check_press=on_check_press)
+       
+        return table

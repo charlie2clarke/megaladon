@@ -3,7 +3,7 @@ from .pdf import Pdf
 
 class PackagingList:
     def __init__(self):
-        self.order_controller = OrderController()
+        self.order_controller = OrderController(None)
         self.pdf = Pdf()
         self.orders_to_package = []
 

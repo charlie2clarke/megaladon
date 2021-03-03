@@ -4,7 +4,7 @@ from .pdf import Pdf
 
 class AddressLabel:
     def __init__(self):
-        self.order_controller = OrderController()
+        self.order_controller = OrderController(None)
         self.pdf = Pdf()
 
     def create_address_label(self, orders_selected):

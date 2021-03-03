@@ -3,8 +3,7 @@ from .order_controller import OrderController
 
 class Table:
     def __init__(self):
-        self.order_controller = OrderController()
-        # self.get_table_data()
+        self.order_controller = OrderController(None)
         
     def get_table_data(self):
         # order number, customer, order date, status, total gross

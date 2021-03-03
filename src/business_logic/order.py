@@ -32,6 +32,10 @@ class Order:
     def status(self):
         return self._status
 
+    @status.setter
+    def status(self, new_status):
+        self._status = new_status
+
     
 
 

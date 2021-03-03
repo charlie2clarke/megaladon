@@ -18,3 +18,7 @@ class Customer:
     @property
     def address(self):
         return self._address
+
+    @property
+    def email(self):
+        return self._email

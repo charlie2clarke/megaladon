@@ -5,3 +5,5 @@ SENDER_DETAILS = ['Sender:', 'Awesome Organisation Inc.',
 
 BASE_DIR = os.path.dirname(__file__)
 ADDRESS_LABELS_DIR = os.path.abspath(os.path.join(BASE_DIR, '..', 'address_labels'))
+
+URL = 'http://localhost:8080'

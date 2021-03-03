@@ -4,7 +4,7 @@ from .pdf import Pdf
 
 class PickingList:
     def __init__(self):
-        self.order_controller = OrderController()
+        self.order_controller = OrderController(None)
         self.pdf = Pdf()
         self.ids = []
         self.product_descriptions = []
