@@ -121,3 +121,31 @@ class Query:
                 Status.id
         ''', None)
         return queryset.fetchall()
+
+    def update_database(self):
+        from business_logic.order_controller import OrderController
+        def get_status_id(status):
+            queryset = self.data_access.execute('''
+                SELECT
+                    Status.id
+                FROM
+                    Status
+                WHERE
+                    Status.status_description = ?
+            ''', (status,)).fetchone()
+            return int(queryset[0])
+
+        for order in OrderController.updated_orders:
+            order_key = list(order.keys())[0]
+            order_obj = order[order_key]
+            status_id = get_status_id(order_obj.status)
+            purchase_id = int(order_key.split('_')[1])
+
+            self.data_access.execute('''
+                UPDATE 
+                    Purchase
+                SET 
+                    status_id = ?
+                WHERE
+                    id = ?
+            ''', (status_id, purchase_id))

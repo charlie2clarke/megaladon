@@ -13,6 +13,7 @@ from constants import URL
 class OrderController:
     order_controller_counter = 0
     orders = {}
+    updated_orders = []
     screen_instance = None
 
     def __init__(self, screen_instance):
@@ -189,6 +190,9 @@ class OrderController:
                                        order[0]].status = 'Dispatched'
             elif order[3] == 'Dispatched':
                 OrderController.orders['order_' + order[0]].status = 'Complete'
+            order_dict = {}
+            order_dict['order_' + order[0]] = OrderController.orders['order_' + order[0]]
+            OrderController.updated_orders.append(order_dict)
             self.email.update_status(
                 OrderController.orders['order_' + order[0]])
         # Have to import here to avoid circular import issues - will always be present if containing all system tiers in one application
