@@ -1,5 +1,6 @@
 import json
 import requests
+from datetime import datetime
 from collections import Counter
 from data.query import Query
 from .product import Product
@@ -185,11 +186,16 @@ class OrderController:
 
     def update_order(self, orders_selected):
         for order in orders_selected:
+            date_now = datetime.today().strftime('%Y-%m-%d')
             if order[3] == 'Awaiting':
                 OrderController.orders['order_' +
                                        order[0]].status = 'Dispatched'
+                OrderController.orders['order_' +
+                                       order[0]].dispatched_date = date_now
             elif order[3] == 'Dispatched':
                 OrderController.orders['order_' + order[0]].status = 'Complete'
+                OrderController.orders['order_' +
+                                       order[0]].completed_date = date_now
             order_dict = {}
             order_dict['order_' + order[0]] = OrderController.orders['order_' + order[0]]
             OrderController.updated_orders.append(order_dict)

@@ -29,13 +29,25 @@ class Order:
         return self._created_date
 
     @property
+    def dispatched_date(self):
+        return self._dispatched_date
+
+    @dispatched_date.setter
+    def dispatched_date(self, value):
+        self._dispatched_date = value
+
+    @property
+    def completed_date(self):
+        return self._completed_date
+
+    @completed_date.setter
+    def completed_date(self, value):
+        self._completed_date = value
+
+    @property
     def status(self):
         return self._status
 
     @status.setter
     def status(self, new_status):
         self._status = new_status
-
-    
-
-

@@ -140,12 +140,18 @@ class Query:
             order_obj = order[order_key]
             status_id = get_status_id(order_obj.status)
             purchase_id = int(order_key.split('_')[1])
+            dispatched_date = order_obj.dispatched_date
+            completed_date = order_obj.completed_date
+            print(dispatched_date)
+            print(completed_date)
 
             self.data_access.execute('''
                 UPDATE 
                     Purchase
                 SET 
-                    status_id = ?
+                    status_id = ?, 
+                    dispatched_date = ?,
+                    completed_date = ?
                 WHERE
                     id = ?
-            ''', (status_id, purchase_id))
+            ''', (status_id, dispatched_date, completed_date, purchase_id))
