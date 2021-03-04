@@ -11,7 +11,8 @@ class Table:
         order_number = 0
 
         for order in self.order_controller.orders:
-            order_number += 1
+            order_number = order.split('_')[1] # should be the id
+            
             row_data = []
             order_obj = self.order_controller.orders[order]
             customer_name = order_obj.customer.first_name + ' ' + order_obj.customer.last_name
