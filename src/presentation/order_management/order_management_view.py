@@ -26,7 +26,7 @@ class OrderManagementScreen(Screen):
         self._table = Table()
         self._data_table = DataTable()
         # creating order member variable because is needed to access instance method
-        # for rendering the order details and the dialog kivy widget must be referenced 
+        # for rendering the order details and the dialog kivy widget must be referenced
         # as a class instance.
         self._order = Order(None, None, None, None, None, None, None)
         self._rows_checked = []
@@ -75,8 +75,6 @@ class OrderManagementScreen(Screen):
         '''Called when a table row is clicked. SHOULD DISPLAY MORE DETAILS OF THE ORDER CLICKED ON '''
         
         if self._check_pressed == False:
-            print("ROW")
-            print(instance_table, instance_row)
             # Getting the order id from the row as instance row only returns
             # the text of the column clicked
             index = instance_row.index
@@ -92,6 +90,17 @@ class OrderManagementScreen(Screen):
     
         self._check_pressed = True
         Timer(1.0, set_checked_press)
-        self._rows_checked.append(current_row)
-        print("CHECK")
-        print(instance_table, current_row)
+        if current_row in self._rows_checked:
+            self._rows_checked.remove(current_row)
+        else:
+            self._rows_checked.append(current_row)
+        
+        if len(self._rows_checked) > 0:
+            self.ids.packaging_list_button.disabled = False
+            self.ids.address_label_button.disabled = False
+            self.ids.status_button.disabled = False
+        else:
+            self.ids.packaging_list_button.disabled = True
+            self.ids.address_label_button.disabled = True
+            self.ids.status_button.disabled = True
+
