@@ -7,7 +7,8 @@ from constants import ADDRESS_LABELS_DIR
 class Print:
     all_printers = [printer[2] for printer in win32print.EnumPrinters(2)]
 
-    def print_pdf(self, selected_printer, directory_name):
+    @staticmethod
+    def print_pdf(selected_printer, directory_name):
         def get_printer_index(selected_printer):
             for index, printer_details in enumerate(win32print.EnumPrinters(2)):
                 if printer_details[2] == selected_printer:
@@ -16,9 +17,6 @@ class Print:
         printer_num = get_printer_index(selected_printer)
 
         win32print.SetDefaultPrinter(Print.all_printers[printer_num])
-
-        base_dir = os.path.dirname(__file__)
-        pdf_directory = os.path.join(base_dir, directory_name)
 
         for path in Path(ADDRESS_LABELS_DIR).rglob('*.pdf'):
             try:
