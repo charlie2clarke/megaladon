@@ -1,6 +1,7 @@
 import json
 import requests
 from datetime import datetime
+from kivy.clock import Clock
 from collections import Counter
 from data.query import Query
 from .product import Product
@@ -26,10 +27,10 @@ class OrderController:
         if screen_instance is not None:
             OrderController.screen_instance = screen_instance
 
-        if OrderController.order_controller_counter == 1:
-            self.get_new_orders()
-            self.all_data = self.query.get_all_data()
-            self.initialise_orders()  # I should make this a class variable?!
+    def load_orders(self):
+        self.get_new_orders()
+        self.all_data = self.query.get_all_data()
+        self.initialise_orders()
 
     def get_new_orders(self):
 

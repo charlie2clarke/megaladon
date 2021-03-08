@@ -35,7 +35,11 @@ class OrderManagementScreen(Screen):
         # Class is instantiated once through python and once through Kivy, so
         # am making sure the costly database call is only invoked once.
         if OrderManagementScreen._intialise_counter == 1:
+            # Is calling the intial creation of the table. Uses the schedule_once function
+            # to await for creation of kivy widgets so can add table to screen.
             Clock.schedule_once(partial(self.create_order_table, False, False))
+            # Asynchronous thread to refresh orders every minute.
+            Clock.schedule_interval(partial(self.create_order_table, True, False), 60)
 
     def create_order_table(self, reset, reset_checks, clock):
         # Clock is an argument passed from the Clock.schedule_once call.

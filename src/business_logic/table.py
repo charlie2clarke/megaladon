@@ -7,6 +7,7 @@ class Table:
         
     def get_table_data(self):
         # order number, customer, order date, status, total gross
+        self.order_controller.load_orders()
         table_data = []
         order_number = 0
 
