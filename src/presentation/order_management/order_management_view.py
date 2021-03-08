@@ -35,21 +35,22 @@ class OrderManagementScreen(Screen):
         # Class is instantiated once through python and once through Kivy, so
         # am making sure the costly database call is only invoked once.
         if OrderManagementScreen._intialise_counter == 1:
-            Clock.schedule_once(partial(self.create_order_table, None))
+            Clock.schedule_once(partial(self.create_order_table, False, False))
 
-    def create_order_table(self, reset, clock):
+    def create_order_table(self, reset, reset_checks, clock):
         # Clock is an argument passed from the Clock.schedule_once call.
-        if reset:
+        if reset or reset_checks:
             self.ids.table_container.clear_widgets()
 
-        self.row_data = self._table.get_table_data()
-        self.column_data = [
-            ('No.', dp(30)),
-            ('Customer', dp(30)),
-            ('Order Date', dp(30)),
-            ('Status', dp(30)),
-            ('Total Gross', dp(30)),
-        ]
+        if reset_checks == False:
+            self.row_data = self._table.get_table_data()
+            self.column_data = [
+                ('No.', dp(30)),
+                ('Customer', dp(30)),
+                ('Order Date', dp(30)),
+                ('Status', dp(30)),
+                ('Total Gross', dp(30)),
+            ]
         self._order_table = self._data_table.create_data_table(
             self.column_data, self.row_data, self.on_row_press, self.on_check_press)
 
@@ -59,17 +60,35 @@ class OrderManagementScreen(Screen):
 
         self.ids.table_container.add_widget(self._order_table)
 
+    def enable_buttons(self):
+        self.ids.packaging_list_button.disabled = False
+        self.ids.address_label_button.disabled = False
+        self.ids.status_button.disabled = False
+
+    def disable_buttons(self):
+        self.ids.packaging_list_button.disabled = True
+        self.ids.address_label_button.disabled = True
+        self.ids.status_button.disabled = True
+
+    def clear_checked(self):
+        self._rows_checked = []
+        self.disable_buttons()
+        self.create_order_table(False, True, None)
+
     def handle_picking_click(self):
         self._picking_list.create_picking_list()
 
     def handle_packaging_click(self):
-        self._packaging_list.create__packaging_list(self._rows_checked)
+        self._packaging_list.create_packaging_list(self._rows_checked)
+        self.clear_checked()
 
     def handle_address_click(self):
         self._address_label.create_address_label(self._rows_checked)
+        self.clear_checked()
 
     def handle_status_click(self):
         self._order_controller.update_order(self._rows_checked)
+        self.clear_checked()
 
     def on_row_press(self, instance_table, instance_row):
         '''Called when a table row is clicked. SHOULD DISPLAY MORE DETAILS OF THE ORDER CLICKED ON '''
@@ -96,11 +115,7 @@ class OrderManagementScreen(Screen):
             self._rows_checked.append(current_row)
         
         if len(self._rows_checked) > 0:
-            self.ids.packaging_list_button.disabled = False
-            self.ids.address_label_button.disabled = False
-            self.ids.status_button.disabled = False
+            self.enable_buttons()
         else:
-            self.ids.packaging_list_button.disabled = True
-            self.ids.address_label_button.disabled = True
-            self.ids.status_button.disabled = True
+            self.disable_buttons()
 

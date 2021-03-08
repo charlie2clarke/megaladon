@@ -15,5 +15,5 @@ class AddressLabel:
             address = [order_obj.customer.first_name + ' ' + order_obj.customer.last_name,
                        order_obj.customer.address.line_one, order_obj.customer.address.city]
 
-            self.pdf.write_address_label(address, order_number)
+            self.pdf.write_address_label(address, order_number, index)
 

@@ -1,7 +1,7 @@
 from fpdf import FPDF
 from presentation.components.dialog import Dialog
 import os, shutil
-from constants import ADDRESS_LABELS_DIR, SENDER_DETAILS
+from constants import PICKING_LIST_DIR, ADDRESS_LABELS_DIR, PACKAGING_LIST_DIR, SENDER_DETAILS
 
 
 class Pdf:
@@ -9,6 +9,8 @@ class Pdf:
         self.dialog = Dialog()
 
     def create_page(self):
+        # Initialising here rather than in constructor because some methods are invoked
+        # iteratively, so need to create a new page each time.
         self.document = FPDF(format='A4', orientation='L', unit='in')
         self.document.add_page()
         self.document.set_font('Arial', '', 14)
@@ -49,14 +51,19 @@ class Pdf:
 
         self.create_table(data)
 
-        self.document.output(name='Picking List.pdf')
+        # self.document.output(name='Picking List.pdf')
+        file_name = PICKING_LIST_DIR + '/Picking List.pdf'
+        self.document.output(name=file_name, dest='F')
+        self.dialog.render_dialog('Picking list successfully created!',
+                                  'You can find the pdf under the picking_list directory', None)
 
-    def write_packaging_list(self, date, address, items, number):
+    def write_packaging_list(self, date, address, items, number, call_counter):
+        if call_counter == 0:
+            self.clear_directory(PACKAGING_LIST_DIR)
+
         self.create_page()
-        # sender_details = ['Sender:', 'Awesome Organisation Inc.',
-        #                   'Building Abbey Road', 'London', 'L2C 802', '12345 678910']
-
         self.document.set_x(-30)
+
         for index, item in enumerate(SENDER_DETAILS):
             self.set_text_style(index)
             self.document.cell(
@@ -66,7 +73,6 @@ class Pdf:
         self.document.ln(0.5)
         self.document.cell(
             self.column_width, 2 * self.text_height, 'Invoice No. xxxxxxxx                                             Date: ' + date, border=0)
-
         self.document.ln(0.5)
 
         for index, item in enumerate(address):
@@ -74,15 +80,21 @@ class Pdf:
             self.document.cell(
                 self.column_width, 2 * self.text_height, str(item), border=0)
             self.document.ln(self.text_height * 1.5)
+
         self.document.set_font('Arial', '', 12)
         self.document.ln(self.text_height * 2.5)
         self.create_table(items)
 
-        self.document.output(name='Packaging List ' +
-                             address[1] + ' ' + str(number) + '.pdf')
+        file_name = PACKAGING_LIST_DIR + '/Packaging List ' + \
+            address[1] + ' ' + str(number) + '.pdf'
+        self.document.output(name=file_name, dest='F')
+        self.dialog.render_dialog('Packaging lists successfully created!',
+                                  'You can find the pdfs under the packaging_lists directory', None)
 
-    def write_address_label(self, address, number):
-        self.clear_directory(ADDRESS_LABELS_DIR)
+
+    def write_address_label(self, address, number, call_counter):
+        if call_counter == 0:
+            self.clear_directory(ADDRESS_LABELS_DIR)
 
         self.create_page()
 
