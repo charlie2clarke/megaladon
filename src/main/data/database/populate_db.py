@@ -56,7 +56,7 @@ conn.commit()
 # Populate Product table
 c.execute("""
     INSERT INTO Product (product_name, individual_price, stock_count, aisle, shelf)
-        VALUES ('Samsung Galaxy S21 Ultra', 799.00, 20, 3, 3)  
+        VALUES ('Samsung Galaxy S21 Ultra', 799.00, 20, 1, 3)  
 """)
 conn.commit()
 
@@ -70,35 +70,35 @@ conn.commit()
 # Populate Product table
 c.execute("""
     INSERT INTO Product (product_name, individual_price, stock_count, aisle, shelf)
-        VALUES ('iPhone 12', 1299.00, 20, 3, 5)  
+        VALUES ('iPhone 12', 1299.00, 20, 2, 5)  
 """)
 conn.commit()
 
 # Populate Product table
 c.execute("""
     INSERT INTO Product (product_name, individual_price, stock_count, aisle, shelf)
-        VALUES ('Oppo Find X2 Pro', 899.00, 20, 3, 6)  
+        VALUES ('Oppo Find X2 Pro', 899.00, 20, 4, 6)  
 """)
 conn.commit()
 
 # Populate Product table
 c.execute("""
     INSERT INTO Product (product_name, individual_price, stock_count, aisle, shelf)
-        VALUES ('Motorola Edge Plus', 300.00, 20, 3, 7)  
+        VALUES ('Motorola Edge Plus', 300.00, 20, 2, 7)  
 """)
 conn.commit()
 
 # Populate Product table
 c.execute("""
     INSERT INTO Product (product_name, individual_price, stock_count, aisle, shelf)
-        VALUES ('Xiaomi Mi Note 10', 250.00, 20, 3, 8)  
+        VALUES ('Xiaomi Mi Note 10', 250.00, 20, 1, 8)  
 """)
 conn.commit()
 
 # Populate Product table
 c.execute("""
     INSERT INTO Product (product_name, individual_price, stock_count, aisle, shelf)
-        VALUES ('Sony Xperia 1', 479.00, 20, 3, 9)  
+        VALUES ('Sony Xperia 1', 479.00, 20, 2, 9)  
 """)
 conn.commit()
 

@@ -4,10 +4,16 @@ from .order_controller import OrderController
 class Table:
     def __init__(self):
         self.order_controller = OrderController(None)
+        self._get_table_data_counter = 0
         
-    def get_table_data(self):
+    def get_table_data(self, new_api_call):
+        self._get_table_data_counter += 1
+        
+        if self._get_table_data_counter == 1:
+            self.order_controller.load_initial_orders()
+        elif new_api_call == True:
+            self.order_controller.load_new_orders()
         # order number, customer, order date, status, total gross
-        self.order_controller.load_orders()
         table_data = []
         order_number = 0
 

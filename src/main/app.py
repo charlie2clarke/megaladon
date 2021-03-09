@@ -37,7 +37,6 @@ class MainApp(MDApp):
         print(menu)
         print(item)
 
-
     def update_database(self):
         self.query.update_database()
 

@@ -6,13 +6,13 @@ class Email:
         mail_subject = 'Your order has been ' + order_obj.status.lower()
 
         recipient_name = order_obj.customer.first_name + ' ' + order_obj.customer.last_name
-        ordered_items = [str(key['item']) + ' * ' + str(key['quantity']) for key in order_obj.product.ordered_items]
+        ordered_items = ['      ' + str(key['item']) + ' * ' + str(key['quantity']) for key in order_obj.product.ordered_items]
         ordered_items = '\n'.join(ordered_items)
         date = order_obj.dispatched_date if order_obj.status == 'Dispatched' else order_obj.completed_date
 
         mail_body = 'Dear {},\n\n'\
                     'Your order of:\n'\
-                    '   {}\n\n'\
+                    '{}\n\n'\
                     'Was {} on: {}'.format(recipient_name, ordered_items, order_obj.status, date)
 
         outlook = win32com.client.Dispatch("Outlook.Application")

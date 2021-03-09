@@ -6,8 +6,9 @@ from .data_access import DataAccess
 class Query:
     def __init__(self):
         self.data_access = DataAccess()
+        self._new_order_pointer = 0
 
-    def add_order(self, items_and_quantity, first_name, last_name, line_one, line_two, city, email):
+    def add_order(self, items_and_quantity, first_name, last_name, line_one, line_two, city, email, index):
 
         def get_product_id(item_and_quantity):
             # Replacing item name with id
@@ -65,15 +66,15 @@ class Query:
         random_postage = randint(1, 2)
         date_now = datetime.today().strftime('%Y-%m-%d')
 
-        # Sometimes unique constraint fails because it is possible that the previous order in 
-        # the database is for the same customer which would make the row about to be added a duplicate
-
         # Think is because in items and quantity, there are product which aren't grouped 
 
         purchase = self.data_access.execute('''
             INSERT INTO Purchase(platform_id, customer_id, status_id, postage_id, created_date)
             VALUES(?, ?, ?, ?, ?)
         ''', (1, customer_id, 1, random_postage, date_now))
+
+        if index == 1:
+            self.set_new_order_pointer()
 
         items_and_quantity = [get_product_id(
             product) for product in items_and_quantity]
@@ -85,6 +86,15 @@ class Query:
                 INSERT INTO Purchase_Product(purchase_id, product_id, quantity)
                 VALUES(?, ?, ?)
             ''', (last_purchase, item['item'], item['quantity']))
+
+    def set_new_order_pointer(self):
+        queryset = self.data_access.execute('''
+            SELECT
+                MAX(id)
+            FROM
+                Purchase
+        ''', None).fetchone()
+        self._new_order_pointer = int(queryset[0])
 
     def get_all_data(self):
         queryset = self.data_access.execute('''
@@ -120,6 +130,44 @@ class Query:
             ORDER BY
                 Status.id
         ''', None)
+        return queryset.fetchall()
+
+    def get_new_data(self):
+        queryset = self.data_access.execute('''
+            SELECT
+                Purchase_Product.purchase_id,
+                Product.product_name,
+                Purchase_Product.quantity,
+                Customer.first_name,
+                Customer.last_name,
+                Customer.email,
+                Address.line_one,
+                Address.line_two,
+                Address.city,
+                Address.postcode,
+                Status.status_description,
+                Purchase.created_date,
+                Purchase.dispatched_date,
+                Purchase.completed_date,
+                Postage.postage_description,
+                Product.individual_price,
+                Product.id,
+                Product.aisle,
+                Product.shelf
+            FROM
+                Product
+                INNER JOIN Purchase_Product ON Purchase_Product.product_id = Product.id
+                INNER JOIN Purchase ON Purchase.id = Purchase_Product.purchase_id
+                INNER JOIN Status ON Status.id = Purchase.status_id
+                INNER JOIN Postage ON Postage.id = Purchase.postage_id
+                INNER JOIN Customer ON Customer.id = Purchase.customer_id
+                INNER JOIN Customer_Address ON Customer_Address.customer_id = Customer.id
+                INNER JOIN Address ON Address.id = Customer_Address.address_id
+            WHERE
+                Purchase.id >= ?
+            ORDER BY
+                Status.id
+        ''', (self._new_order_pointer,))
         return queryset.fetchall()
 
     def update_database(self):

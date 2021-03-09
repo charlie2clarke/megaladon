@@ -37,17 +37,17 @@ class OrderManagementScreen(Screen):
         if OrderManagementScreen._intialise_counter == 1:
             # Is calling the intial creation of the table. Uses the schedule_once function
             # to await for creation of kivy widgets so can add table to screen.
-            Clock.schedule_once(partial(self.create_order_table, False, False))
+            Clock.schedule_once(partial(self.create_order_table, False, False, False))
             # Asynchronous thread to refresh orders every minute.
-            Clock.schedule_interval(partial(self.create_order_table, True, False), 60)
+            Clock.schedule_interval(partial(self.create_order_table, True, False, True), 10)
 
-    def create_order_table(self, reset, reset_checks, clock):
+    def create_order_table(self, reset, reset_checks, new_api_call, clock):
         # Clock is an argument passed from the Clock.schedule_once call.
         if reset or reset_checks:
             self.ids.table_container.clear_widgets()
 
         if reset_checks == False:
-            self.row_data = self._table.get_table_data()
+            self.row_data = self._table.get_table_data(new_api_call)
             self.column_data = [
                 ('No.', dp(30)),
                 ('Customer', dp(30)),
@@ -77,7 +77,7 @@ class OrderManagementScreen(Screen):
     def clear_checked(self):
         self._rows_checked = []
         self.disable_buttons()
-        self.create_order_table(False, True, None)
+        self.create_order_table(False, True, None, False)
 
     def handle_picking_click(self):
         self._picking_list.create_picking_list()

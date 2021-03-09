@@ -23,14 +23,22 @@ class OrderController:
         self.query = Query()
         self.email = Email()
         self.new_orders = {}
+        self._new_orders = False
 
         if screen_instance is not None:
             OrderController.screen_instance = screen_instance
 
-    def load_orders(self):
+    def load_initial_orders(self):
         self.get_new_orders()
-        self.all_data = self.query.get_all_data()
-        self.initialise_orders()
+        all_data = self.query.get_all_data()
+        self.initialise_orders(all_data)
+
+    def load_new_orders(self):
+        self.get_new_orders()
+        if self._new_orders == True:
+            # Only retrieve data when have received new orders.
+            updated_data = self.query.get_new_data()
+            self.initialise_orders(updated_data)
 
     def get_new_orders(self):
 
@@ -64,6 +72,7 @@ class OrderController:
             request_json = json.loads(request_string)
 
             if request_json != []:
+                self._new_orders = True
                 request_json.sort(key=lambda order: order['name'])
                 # [{first_name: x, last_name: x, email: x, line_one: x, line_two: x, city: x, items: [x, y]}]
                 items = []
@@ -92,7 +101,7 @@ class OrderController:
                             fake_email = get_fake_email(
                                 previous_first_name, previous_last_name)
                             self.query.add_order(items_and_quantity, previous_first_name, previous_last_name,
-                                                 previous_address_line_one, previous_address_line_two, previous_city, fake_email)
+                                                 previous_address_line_one, previous_address_line_two, previous_city, fake_email, index)
                         else:
                             # last order is for a new person
                             items.append(request_json[index - 1]['item'])
@@ -102,7 +111,7 @@ class OrderController:
                             fake_email = get_fake_email(
                                 previous_first_name, previous_last_name)
                             self.query.add_order(items_and_quantity, previous_first_name, previous_last_name,
-                                                 previous_address_line_one, previous_address_line_two, previous_city, fake_email)
+                                                 previous_address_line_one, previous_address_line_two, previous_city, fake_email, index)
                     elif first_name == previous_first_name and last_name == previous_last_name and \
                         address_line_one == previous_address_line_one and address_line_two == previous_address_line_two \
                             and city == previous_city:
@@ -113,18 +122,19 @@ class OrderController:
                         fake_email = get_fake_email(
                             previous_first_name, previous_last_name)
                         self.query.add_order(items_and_quantity, previous_first_name, previous_last_name,
-                                             previous_address_line_one, previous_address_line_two, previous_city, fake_email)
+                                             previous_address_line_one, previous_address_line_two, previous_city, fake_email, index)
 
                         items = []
                         if index + 1 != len(request_json):
                             items.append(request_json[index]['item'])
-
+            else:
+                self._new_orders = False
         except requests.exceptions.ConnectionError as error_c:
             print("There seems to be a network problem " + str(error_c))
         except requests.exceptions.HTTPError as error_h:
             print("HTTP error: " + str(error_h))
 
-    def initialise_orders(self):
+    def initialise_orders(self, order_queryset):
         order = []
 
         def append_order(item_id, item, quantity, individual_price, aisle, shelf):
@@ -139,51 +149,51 @@ class OrderController:
 
             return order_entry
 
-        for i in range(len(self.all_data) + 1):
+        for i in range(len(order_queryset) + 1):
             if i == 0:
                 # first item - append
-                order.append(append_order(self.all_data[i][16], self.all_data[i][1], self.all_data[i][2],
-                                          self.all_data[i][15], self.all_data[i][17], self.all_data[i][18]))
+                order.append(append_order(order_queryset[i][16], order_queryset[i][1], order_queryset[i][2],
+                                          order_queryset[i][15], order_queryset[i][17], order_queryset[i][18]))
 
-                address = Address(line_one=self.all_data[i][6], line_two=self.all_data[i][7],
-                                  city=self.all_data[i][8], postcode=self.all_data[i][9])
-                customer = Customer(address=address, first_name=self.all_data[i][3],
-                                    last_name=self.all_data[i][4], email=self.all_data[i][5])
-            elif i == len(self.all_data):
+                address = Address(line_one=order_queryset[i][6], line_two=order_queryset[i][7],
+                                  city=order_queryset[i][8], postcode=order_queryset[i][9])
+                customer = Customer(address=address, first_name=order_queryset[i][3],
+                                    last_name=order_queryset[i][4], email=order_queryset[i][5])
+            elif i == len(order_queryset):
                 # is the last order
-                order.append(append_order(self.all_data[i-1][16], self.all_data[i-1][1], self.all_data[i-1][2],
-                                          self.all_data[i-1][15], self.all_data[i-1][17], self.all_data[i-1][18]))
+                order.append(append_order(order_queryset[i-1][16], order_queryset[i-1][1], order_queryset[i-1][2],
+                                          order_queryset[i-1][15], order_queryset[i-1][17], order_queryset[i-1][18]))
                 # then submit
                 product = Product(ordered_items=order)
-                address = Address(line_one=self.all_data[i-1][6], line_two=self.all_data[i-1][7],
-                                  city=self.all_data[i-1][8], postcode=self.all_data[i-1][9])
-                customer = Customer(address=address, first_name=self.all_data[i-1][3],
-                                    last_name=self.all_data[i-1][4], email=self.all_data[i-1][5])
-                OrderController.orders["order_" + str(self.all_data[i-1][0])] = Order(product=product, customer=customer, status=self.all_data[i-1][10],
-                                                                                      created_date=self.all_data[i -
-                                                                                                                 1][11], dispatched_date=self.all_data[i-1][12],
-                                                                                      completed_date=self.all_data[i-1][13], postage=self.all_data[i-1][14])
-            elif self.all_data[i][0] == self.all_data[i-1][0]:
+                address = Address(line_one=order_queryset[i-1][6], line_two=order_queryset[i-1][7],
+                                  city=order_queryset[i-1][8], postcode=order_queryset[i-1][9])
+                customer = Customer(address=address, first_name=order_queryset[i-1][3],
+                                    last_name=order_queryset[i-1][4], email=order_queryset[i-1][5])
+                OrderController.orders["order_" + str(order_queryset[i-1][0])] = Order(product=product, customer=customer, status=order_queryset[i-1][10],
+                                                                                       created_date=order_queryset[i -
+                                                                                                                   1][11], dispatched_date=order_queryset[i-1][12],
+                                                                                       completed_date=order_queryset[i-1][13], postage=order_queryset[i-1][14])
+            elif order_queryset[i][0] == order_queryset[i-1][0]:
                 # is the same order as the one before it
-                order.append(append_order(self.all_data[i][16], self.all_data[i][1], self.all_data[i][2],
-                                          self.all_data[i][15], self.all_data[i][17], self.all_data[i][18]))
+                order.append(append_order(order_queryset[i][16], order_queryset[i][1], order_queryset[i][2],
+                                          order_queryset[i][15], order_queryset[i][17], order_queryset[i][18]))
             else:
                 # new order, so firstly submit the previous order and then add details of new order, unless the
                 # next item is the last one
                 product = Product(ordered_items=order)
-                address = Address(line_one=self.all_data[i-1][6], line_two=self.all_data[i-1][7],
-                                  city=self.all_data[i-1][8], postcode=self.all_data[i-1][9])
-                customer = Customer(address=address, first_name=self.all_data[i-1][3],
-                                    last_name=self.all_data[i-1][4], email=self.all_data[i-1][5])
-                OrderController.orders["order_" + str(self.all_data[i-1][0])] = Order(product=product, customer=customer, status=self.all_data[i-1][10],
-                                                                                      created_date=self.all_data[i -
-                                                                                                                 1][11], dispatched_date=self.all_data[i-1][12],
-                                                                                      completed_date=self.all_data[i-1][13], postage=self.all_data[i-1][14])
+                address = Address(line_one=order_queryset[i-1][6], line_two=order_queryset[i-1][7],
+                                  city=order_queryset[i-1][8], postcode=order_queryset[i-1][9])
+                customer = Customer(address=address, first_name=order_queryset[i-1][3],
+                                    last_name=order_queryset[i-1][4], email=order_queryset[i-1][5])
+                OrderController.orders["order_" + str(order_queryset[i-1][0])] = Order(product=product, customer=customer, status=order_queryset[i-1][10],
+                                                                                       created_date=order_queryset[i -
+                                                                                                                   1][11], dispatched_date=order_queryset[i-1][12],
+                                                                                       completed_date=order_queryset[i-1][13], postage=order_queryset[i-1][14])
                 order = []
 
-                if i + 1 != len(self.all_data):
-                    order.append(append_order(self.all_data[i][16], self.all_data[i][1], self.all_data[i][2],
-                                              self.all_data[i][15], self.all_data[i][17], self.all_data[i][18]))
+                if i + 1 != len(order_queryset):
+                    order.append(append_order(order_queryset[i][16], order_queryset[i][1], order_queryset[i][2],
+                                              order_queryset[i][15], order_queryset[i][17], order_queryset[i][18]))
 
     def update_order(self, orders_selected):
         for order in orders_selected:
@@ -198,11 +208,12 @@ class OrderController:
                 OrderController.orders['order_' +
                                        order[0]].completed_date = date_now
             order_dict = {}
-            order_dict['order_' + order[0]] = OrderController.orders['order_' + order[0]]
+            order_dict['order_' + order[0]
+                       ] = OrderController.orders['order_' + order[0]]
             OrderController.updated_orders.append(order_dict)
             self.email.update_status(
                 OrderController.orders['order_' + order[0]])
         # Have to import here to avoid circular import issues - will always be present if containing all system tiers in one application
         from presentation.order_management.order_management_view import OrderManagementScreen
         OrderManagementScreen.create_order_table(
-            OrderController.screen_instance, True, False, None)
+            OrderController.screen_instance, True, False, False, None)
