@@ -39,7 +39,7 @@ class OrderManagementScreen(Screen):
             # to await for creation of kivy widgets so can add table to screen.
             Clock.schedule_once(partial(self.create_order_table, False, False, False))
             # Asynchronous thread to refresh orders every minute.
-            Clock.schedule_interval(partial(self.create_order_table, True, False, True), 10)
+            Clock.schedule_interval(partial(self.create_order_table, True, False, True), 60)
 
     def create_order_table(self, reset, reset_checks, new_api_call, clock):
         # Clock is an argument passed from the Clock.schedule_once call.

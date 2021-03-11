@@ -40,7 +40,7 @@ class AddressLabel:
         """
             For each of the orders selected with checkboxes will find the data for that order
             and format is suitable for the pdf module.
-         
+       
             Parameters:
                 orders_selected: an array of the row data from each row checked with a checkbox
                 (each item is a string).
@@ -53,3 +53,5 @@ class AddressLabel:
                        order_obj.customer.address.line_one, order_obj.customer.address.city]
 
             self._pdf.write_address_label(address, order_id, index)
+
+            return address, order_id, index
