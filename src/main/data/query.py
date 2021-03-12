@@ -5,14 +5,14 @@ from .data_access import DataAccess
 
 class Query:
     def __init__(self):
-        self.data_access = DataAccess()
+        self._data_access = DataAccess()
         self._new_order_pointer = 0
 
     def add_order(self, items_and_quantity, first_name, last_name, line_one, line_two, city, email, index):
 
         def get_product_id(item_and_quantity):
             # Replacing item name with id
-            queryset = self.data_access.execute('''
+            queryset = self._data_access.execute('''
                 SELECT
                     Product.id
                 FROM
@@ -28,7 +28,7 @@ class Query:
 
         def check_if_customer_exists():
             # Duck typing - if it looks like a duck, quacks like a duck, then its probably a duck...
-            queryset = self.data_access.execute('''
+            queryset = self._data_access.execute('''
                 SELECT
                     * 
                 FROM
@@ -44,19 +44,19 @@ class Query:
         existing_customer = check_if_customer_exists()
 
         if existing_customer is None:
-            customer = self.data_access.execute('''
+            customer = self._data_access.execute('''
                 INSERT INTO Customer(first_name, last_name, email)
                 VALUES(?, ?, ?)
             ''', (first_name, last_name, email))
 
-            address = self.data_access.execute('''
+            address = self._data_access.execute('''
                 INSERT INTO Address(line_one, line_two, city)
                 VALUES(?, ?, ?)
             ''', (line_one, line_two, city))
 
             customer_id, address_id = customer.lastrowid, address.lastrowid
 
-            self.data_access.execute('''
+            self._data_access.execute('''
                 INSERT INTO Customer_Address(customer_id, address_id)
                 VALUES(?, ?)
             ''', (customer_id, address_id))
@@ -68,7 +68,7 @@ class Query:
 
         # Think is because in items and quantity, there are product which aren't grouped 
 
-        purchase = self.data_access.execute('''
+        purchase = self._data_access.execute('''
             INSERT INTO Purchase(platform_id, customer_id, status_id, postage_id, created_date)
             VALUES(?, ?, ?, ?, ?)
         ''', (1, customer_id, 1, random_postage, date_now))
@@ -82,13 +82,13 @@ class Query:
         last_purchase = purchase.lastrowid
 
         for item in items_and_quantity:
-            self.data_access.execute('''
+            self._data_access.execute('''
                 INSERT INTO Purchase_Product(purchase_id, product_id, quantity)
                 VALUES(?, ?, ?)
             ''', (last_purchase, item['item'], item['quantity']))
 
     def set_new_order_pointer(self):
-        queryset = self.data_access.execute('''
+        queryset = self._data_access.execute('''
             SELECT
                 MAX(id)
             FROM
@@ -97,7 +97,7 @@ class Query:
         self._new_order_pointer = int(queryset[0])
 
     def get_all_data(self):
-        queryset = self.data_access.execute('''
+        queryset = self._data_access.execute('''
             SELECT
                 Purchase_Product.purchase_id,
                 Product.product_name,
@@ -133,7 +133,7 @@ class Query:
         return queryset.fetchall()
 
     def get_new_data(self):
-        queryset = self.data_access.execute('''
+        queryset = self._data_access.execute('''
             SELECT
                 Purchase_Product.purchase_id,
                 Product.product_name,
@@ -171,9 +171,9 @@ class Query:
         return queryset.fetchall()
 
     def update_database(self):
-        from business_logic.order_controller import OrderController
+        from controllers.order_controller import OrderController
         def get_status_id(status):
-            queryset = self.data_access.execute('''
+            queryset = self._data_access.execute('''
                 SELECT
                     Status.id
                 FROM
@@ -190,10 +190,8 @@ class Query:
             purchase_id = int(order_key.split('_')[1])
             dispatched_date = order_obj.dispatched_date
             completed_date = order_obj.completed_date
-            print(dispatched_date)
-            print(completed_date)
 
-            self.data_access.execute('''
+            self._data_access.execute('''
                 UPDATE 
                     Purchase
                 SET 

@@ -6,7 +6,6 @@ class Product:
     def ordered_items(self):
         return self._ordered_items
 
-
     def get_total(self, ordered_items):
         total = 0
 
@@ -14,10 +13,3 @@ class Product:
             total = total + (dictionary['quantity'] * dictionary['individual_price'])
 
         return total
-
-    
-    # @ordered_items.setter
-    # def ordered_items(self, new_ordered_items):
-    #     self.ordered_items = new_ordered_items
-    
-

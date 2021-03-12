@@ -1,22 +1,19 @@
 import sqlite3
-import os
 from sqlite3.dbapi2 import Connection, Cursor
+from constants import DATABASE
 
 class DataAccess:
     def __init__(self):
-        self.conn = self.create_connection()
-        self.cur = self.conn.cursor()
+        self._conn = self._create_connection()
+        self._cur = self._conn.cursor()
     
-    def create_connection(self):
-        # base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '/', 'database'))
-        base_dir = os.path.join(os.path.dirname( __file__ ), 'database')
-        database_file = os.path.join(base_dir, 'OnlineStore.db')
-        return sqlite3.connect(database_file)
+    def _create_connection(self):
+        return sqlite3.connect(DATABASE)
 
     def execute(self, query, data):
         if data is None:
-            self.cur.execute(query)
+            self._cur.execute(query)
         else:
-            self.cur.execute(query, data)
-        self.conn.commit()
-        return self.cur
+            self._cur.execute(query, data)
+        self._conn.commit()
+        return self._cur
