@@ -1,10 +1,10 @@
 import os, shutil
-from constants import PACKAGING_LIST_DIR, ADDRESS_LABELS_DIR
-from controllers.request_controller import RequestController
-from controllers.order_controller import OrderController
-from data.query import Query
-from document import Document
-from print import Print
+from order_management.constants import PACKAGING_LIST_DIR, ADDRESS_LABELS_DIR
+from order_management.controllers.request_controller import RequestController
+from order_management.controllers.order_controller import OrderController
+from order_management.data.query import Query
+from order_management.document import Document
+from order_management.print import Print
 
 
 class Main:
@@ -67,7 +67,8 @@ class Main:
         self._clear_directory(PACKAGING_LIST_DIR)
         for order in orders_selected:
             order_instance = self._orders['order_' + order[0]]
-            self._document.create_packaging_list(order_instance)
+            products_and_quantities = self._order_controller.get_product_quantities(order_instance)
+            self._document.create_packaging_list(order_instance, products_and_quantities)
         dialog_title = 'Packaging lists successfully created!'
         dialog_body = 'You can find the pdfs under the packaging_lists directory'
         return dialog_title, dialog_body

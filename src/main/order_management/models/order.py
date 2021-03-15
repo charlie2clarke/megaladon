@@ -2,7 +2,7 @@ class Order:
     def __init__(
             self,
             order_id,
-            product, 
+            products, 
             customer, 
             status, 
             created_date, 
@@ -11,7 +11,7 @@ class Order:
             postage
         ):
         self._order_id = order_id
-        self._product = product
+        self._products = products
         self._customer = customer
         self._status = status
         self._created_date = created_date
@@ -20,8 +20,8 @@ class Order:
         self._postage = postage
 
     @property
-    def product(self):
-        return self._product
+    def products(self):
+        return self._products
 
     @property
     def customer(self):

@@ -66,8 +66,6 @@ class Query:
         random_postage = randint(1, 2)
         date_now = datetime.today().strftime('%Y-%m-%d')
 
-        # Think is because in items and quantity, there are product which aren't grouped 
-
         purchase = self._data_access.execute('''
             INSERT INTO Purchase(platform_id, customer_id, status_id, postage_id, created_date)
             VALUES(?, ?, ?, ?, ?)

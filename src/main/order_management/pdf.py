@@ -1,5 +1,5 @@
 from fpdf import FPDF
-from constants import SENDER_DETAILS
+from .constants import SENDER_DETAILS
 
 
 class Pdf:
@@ -49,7 +49,11 @@ class Pdf:
 
         # self._document.output(name='Picking List.pdf')
         file_name = destination + '/Picking List.pdf'
-        self._document.output(name=file_name, dest='F')
+
+        try:
+            self._document.output(name=file_name, dest='F')
+        except Exception as e:
+            print("There was an error - have you already got a file called Picking List.pdf open?")
 
     def write_packaging_list(self, date, address, items, order_id, destination):
         self._create_page()

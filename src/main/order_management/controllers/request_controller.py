@@ -1,7 +1,7 @@
 import json
 import requests
 from collections import Counter
-from constants import URL
+from order_management.constants import URL
 
  
 class RequestController:
