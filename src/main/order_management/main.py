@@ -13,9 +13,7 @@ class Main:
         self._request_controller = RequestController()
         self._order_controller = OrderController()
         self._document = Document()
-
         self._orders = {}
-
         self._load_initial_orders()
 
     def _load_initial_orders(self):
@@ -58,7 +56,7 @@ class Main:
             dialog_title = 'There Are Items To Be Picked'
             dialog_body = "There aren't any orders listed as awaiting."
         else:
-            self._document.create_picking_list(self._orders)
+            self._document.create_picking_list(self._orders.values())
             dialog_title = 'Picking list successfully created!'
             dialog_body = 'You can find the pdf under the picking_list directory'
         return dialog_title, dialog_body

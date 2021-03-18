@@ -25,16 +25,3 @@ class Product:
     @property
     def shelf(self):
         return self._shelf
-
-    # @property
-    # def ordered_items(self):
-    #     return self._ordered_items
-
-    # def get_total(self, ordered_items):
-    #     total = 0
-
-    #     for dictionary in ordered_items:
-    #         total = total + (dictionary['quantity']
-    #                          * dictionary['individual_price'])
-
-    #     return total

@@ -19,7 +19,7 @@ class Document:
                     order.customer.address.line_one, order.customer.address.city]
 
     def create_picking_list(self, orders):
-        awaiting_orders = [order for order in orders.values() if order.status == "Awaiting"]
+        awaiting_orders = [order for order in orders if order.status == "Awaiting"]
         ordered_items = [product for order in awaiting_orders for product in order.products]
         ordered_items.sort(key=lambda product: (product.aisle, product.shelf))
 
@@ -38,9 +38,9 @@ class Document:
                 grouped_items_position += 1
 
         headers = ["Product ID", "Product Name", "Quantity", "Individual Price", "Aisle", "Shelf"]
-        rows = grouped_items
-        picking_table_data = [headers] + rows
+        picking_table_data = [headers] + grouped_items
         self._pdf.write_picking_list(picking_table_data, PICKING_LIST_DIR)
+        return picking_table_data
 
     def create_packaging_list(self, order, products_and_quantities):
         # date array, address array, items array

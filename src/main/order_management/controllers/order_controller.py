@@ -1,10 +1,10 @@
 from datetime import datetime
 from collections import Counter
-from order_management.models.product import Product
-from order_management.models.address import Address
-from order_management.models.customer import Customer
-from order_management.models.order import Order
-import order_management.outlook_email
+from ..models.product import Product
+from ..models.address import Address
+from ..models.customer import Customer
+from ..models.order import Order
+from .. import outlook_email
 
 
 class OrderController:
@@ -20,15 +20,15 @@ class OrderController:
     def orders(self):
         return self._orders
 
-    def get_total_price(self, ordered_items):
+    def _get_total_price(self, ordered_items):
         total = 0
 
         for product in ordered_items:
             total = total + product.price
         return total
 
-    def get_product_quantities(self, ordered_items):
-        products = [product.product_name for product in ordered_items.products]
+    def get_product_quantities(self, order):
+        products = [product.product_name for product in order.products]
         products_and_quantities = dict(Counter(products))
         return products_and_quantities
 
@@ -111,7 +111,7 @@ class OrderController:
             row_data.append(order_instance.created_date)
             row_data.append(order_instance.status)
             row_data.append(
-                '£' + str(self.get_total_price(order_instance.products)))
+                '£' + str(self._get_total_price(order_instance.products)))
             table_data.append(tuple(row_data))
 
         return table_data
@@ -129,7 +129,7 @@ class OrderController:
             '{}\n\n' \
             'Order date: {}\n\n' \
             'Dispatched date: {}\n\n' \
-            'Completed date: {}\n\n'.format(name, ordered_items, order_instance.created_date,
+            'Completed date: {}'.format(name, ordered_items, order_instance.created_date,
                                             order_instance.dispatched_date, order_instance. completed_date)
         order_title = 'Order number ' + order_id
 
@@ -152,3 +152,4 @@ class OrderController:
         product_and_quantities = self.get_product_quantities(order_instance)
         outlook_email.update_status(
             order_instance, product_and_quantities)
+        return order_instance

@@ -169,7 +169,7 @@ class Query:
         return queryset.fetchall()
 
     def update_database(self):
-        from controllers.order_controller import OrderController
+        from ..controllers.order_controller import OrderController
         def get_status_id(status):
             queryset = self._data_access.execute('''
                 SELECT
