@@ -22,12 +22,12 @@ def test_update_status(mock_win32_client, order_instance, products_and_quantitie
     test_email = update_status(order_instance, products_and_quantities)
     assert test_email == expected
 
-# @pytest.mark.sad
-# @mock.patch('src.main.order_management.outlook_email.win32com.client.Dispatch', side_effect=Exception(Exception))
-# @pytest.mark.parametrize('order_instance, products_and_quantities, expected', [
-#     (set_up()[0], set_up()[1], ('Your order has been dispatched', 'Dear Test First Name Test Last Name,\n\nYour order of:\n  Product One * 2\n  Product Two * 1\n\nWas Dispatched on: Date Now'))
-# ])
-# def test_update_status(mock_win32_client, order_instance, products_and_quantities, expected):
-#     with pytest.raises(Exception) as exception_info:
-#         update_status(order_instance, products_and_quantities)
-#     assert "Error occured" in str(exception_info.value)
+@pytest.mark.sad
+@mock.patch('src.main.order_management.outlook_email.win32com.client.Dispatch', return_value=Exception)
+@pytest.mark.parametrize('order_instance, products_and_quantities, expected', [
+    (set_up()[0], set_up()[1], ('Your order has been dispatched', 'Dear Test First Name Test Last Name,\n\nYour order of:\n  Product One * 2\n  Product Two * 1\n\nWas Dispatched on: Date Now'))
+])
+def test_update_status(mock_win32_client, order_instance, products_and_quantities, expected):
+    with pytest.raises(Exception) as exception_info:
+        update_status(order_instance, products_and_quantities)
+    assert "Exception" in str(exception_info.value)
