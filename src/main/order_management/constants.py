@@ -10,5 +10,5 @@ PACKAGING_LIST_DIR = os.path.abspath(os.path.join(BASE_DIR, '../../..', 'packagi
 ADDRESS_LABELS_DIR = os.path.abspath(os.path.join(BASE_DIR, '../../..', 'address_labels'))
 DATABASE = os.path.join(BASE_DIR, 'data/database', 'OnlineStore.db')
 
-URL = 'http://localhost:8080'
+WEBAY_URL = 'http://localhost:8080'
 
