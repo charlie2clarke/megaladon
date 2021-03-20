@@ -2,7 +2,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.metrics import dp
 from kivy.clock import Clock
 from functools import partial
-from order_management.main import Main
+from ...main import Main
 from ..components.data_table import DataTable
 from ..components.dialog import Dialog
 

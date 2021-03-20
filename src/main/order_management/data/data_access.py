@@ -1,6 +1,6 @@
 import sqlite3
 from sqlite3.dbapi2 import Connection, Cursor
-from order_management.constants import DATABASE
+from ..constants import DATABASE
 
 class DataAccess:
     def __init__(self):

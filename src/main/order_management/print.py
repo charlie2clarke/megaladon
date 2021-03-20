@@ -21,5 +21,3 @@ class Print:
                 win32api.ShellExecute(0, 'print', str(path), None, '.', 0)
             except:
                 print("There was a problem with the selected printer - this might be because you don't have a default pdf reader in your system settings")
-
-

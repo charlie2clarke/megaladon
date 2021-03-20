@@ -1,7 +1,7 @@
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDRectangleFlatButton
 from kivymd.uix.list import OneLineAvatarIconListItem
-from order_management.constants import ADDRESS_LABELS_DIR
+from ...constants import ADDRESS_LABELS_DIR
 
 
 class Dialog:

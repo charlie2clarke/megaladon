@@ -37,7 +37,7 @@ def create_table(conn, create_table_sql):
 
 def main():
     this_dir = os.path.dirname(__file__)
-    database = os.path.join(this_dir, 'OnlineStore.db')
+    database = os.path.join(this_dir, 'TestOnlineStore.db')
 
     # Have created a separate table for addresses, because it is possible for
     # customers to have more than one registered address

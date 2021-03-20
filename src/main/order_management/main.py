@@ -1,10 +1,10 @@
 import os, shutil
-from order_management.constants import PACKAGING_LIST_DIR, ADDRESS_LABELS_DIR
-from order_management.controllers.request_controller import RequestController
-from order_management.controllers.order_controller import OrderController
-from order_management.data.query import Query
-from order_management.document import Document
-from order_management.print import Print
+from .constants import PACKAGING_LIST_DIR, ADDRESS_LABELS_DIR
+from .controllers.request_controller import RequestController
+from .controllers.order_controller import OrderController
+from .data.query import Query
+from .document import Document
+from .print import Print
 
 
 class Main:
