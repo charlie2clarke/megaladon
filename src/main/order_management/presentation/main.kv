@@ -9,16 +9,8 @@
         MDToolbar:
             title: 'Order Management App'
             specific_text_color: app.theme_cls.accent_color
+            right_action_items: [['help-circle', lambda x: app.handle_menu_click()]]
             elevation: 9
-
-            MDFloatingActionButton:
-                id: toolbar_button
-                icon: 'dots-vertical'
-                theme_text_color: 'Custom'
-                elevation: 0
-                md_bg_color: app.theme_cls.primary_color
-                on_release: app.handle_menu_click()
-
 
 ScreenManager:
     OrderManagementScreen:

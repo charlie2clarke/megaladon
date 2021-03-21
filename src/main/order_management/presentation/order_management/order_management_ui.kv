@@ -11,31 +11,34 @@
         ScrollView:
             id: table_container
 
-    MDRectangleFlatButton:
+    MDRaisedButton:
         id: picking_list_button
         text:"Picking List"
         pos_hint:{'center_x': 0.1, 'center_y': 0.85}
         on_release: root.handle_picking_click()
+        md_bg_color: app.theme_cls.primary_light
 
-    MDRectangleFlatButton:
+    MDRaisedButton:
         id: packaging_list_button
         text:"Packaging List"
         pos_hint:{'center_x': 0.3, 'center_y': 0.85}
         disabled: True
         on_release: root.handle_packaging_click()
+        md_bg_color: app.theme_cls.primary_light
 
-    MDRectangleFlatButton:
+    MDRaisedButton:
         id: address_label_button
         text:"Address Label"
         pos_hint:{'center_x': 0.5, 'center_y': 0.85}
         disabled: True
         on_release: root.handle_address_click()
+        md_bg_color: app.theme_cls.primary_light
 
-
-    MDRectangleFlatButton:
+    MDRaisedButton:
         id: status_button
         text:"Update Status"
         pos_hint:{'center_x': 0.7, 'center_y': 0.85}
         disabled: True
-        on_release: root.handle_status_click()    
+        on_release: root.handle_status_click()   
+        md_bg_color: app.theme_cls.primary_light 
   
