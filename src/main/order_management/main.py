@@ -21,7 +21,8 @@ class Main:
         if new_orders_list is not None:
             self._submit_new_orders(new_orders_list)
         all_data = self._query.get_all_data()
-        self._orders = self._order_controller.initialise_orders(all_data)
+        if all_data != []:
+            self._orders = self._order_controller.initialise_orders(all_data)
 
     def _load_new_orders(self):
         new_orders_list = self._request_controller.get_new_orders()

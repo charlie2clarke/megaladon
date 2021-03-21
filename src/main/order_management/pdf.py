@@ -47,7 +47,6 @@ class Pdf:
 
         self._create_table(data)
 
-        # self._document.output(name='Picking List.pdf')
         file_name = destination + '/Picking List.pdf'
 
         try:

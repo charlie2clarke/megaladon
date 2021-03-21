@@ -5,7 +5,10 @@ import pytest
 import mock
 from src.main.order_management.data.query import Query
 
-class DataAccess:
+THIS_DIR = os.path.dirname(__file__)
+TEST_DATABASE = os.path.join(THIS_DIR, 'database', 'TestOnlineStore.db')
+
+class MockDataAccess:
     def __init__(self):
         self._conn = self._create_connection()
         self._cur = self._conn.cursor()
@@ -25,7 +28,7 @@ class DataAccess:
 
 @pytest.fixture
 def data_access():
-    return DataAccess()
+    return MockDataAccess()
 
 @pytest.fixture
 def query():
@@ -171,7 +174,7 @@ def setup_test_data1(setup_database, data_access):
             VALUES(1, 1, 1)
     ''', None)
 
-@mock.patch('src.main.order_management.data.query.DataAccess', return_value=DataAccess)
-def test_get_all_data(mock_data_access, query, clean_database, setup_database, setup_test_data1, data_access):
-    all_data = query.get_all_data()
-    assert all_data == ("jdi", "fmn")
+# @mock.patch('src.main.order_management.constants.DATABASE', return_value=TEST_DATABASE)
+# def test_get_all_data(mock_data_access, query, clean_database, setup_database, setup_test_data1, data_access):
+#     all_data = query.get_all_data()
+#     assert all_data == ("jdi", "fmn")
