@@ -1,7 +1,21 @@
+'''Writes emails on a Windows PC using Outlook.
+
+Sends email to specified email address with details on updated order status.
+'''
 import win32com.client
 
 
 def update_status(order_instance, products_and_quantities):
+    '''Sends email using Outlook with details of order status.
+
+    Args:
+        order_instance: instance of Order to notify on status update.
+        products_and_quantities: dictionary with product as key and
+        quantity as value.
+
+    Raises:
+        Exception: an error with using the Outlook client.
+    '''
     mail_subject = 'Your order has been ' + order_instance.status.lower()
     recipient_name = order_instance.customer.first_name + \
         ' ' + order_instance.customer.last_name
@@ -22,7 +36,7 @@ def update_status(order_instance, products_and_quantities):
 
         outlook_msg.Subject = mail_subject
         outlook_msg.Body = mail_body
-        
+
         outlook_msg.Display()
     except Exception as e:
         print("Error occured trying to open outlook email - this could be because you have alerts open. More details: " + str(e))
