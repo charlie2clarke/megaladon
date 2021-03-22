@@ -10,10 +10,11 @@ class MockDataAccess:
     def __init__(self):
         self._conn = self._create_connection()
         self._cur = self._conn.cursor()
-    
+
     def _create_connection(self):
         THIS_DIR = os.path.dirname(__file__)
-        TEST_DATABASE = os.path.join(THIS_DIR, 'database', 'TestOnlineStore.db')
+        TEST_DATABASE = os.path.join(THIS_DIR, 'database',
+                                     'TestOnlineStore.db')
         return sqlite3.connect(TEST_DATABASE)
 
     def execute(self, query, data):
@@ -88,7 +89,7 @@ def setup_database(data_access):
             created_date text NOT NULL,
             dispatched_date text,
             completed_date text,
-            
+
             FOREIGN KEY (platform_id)
                 REFERENCES Platform (id)
                     ON DELETE CASCADE
@@ -123,7 +124,7 @@ def setup_database(data_access):
                     ON DELETE CASCADE
             PRIMARY KEY (purchase_id, product_id)
     );''', None)
-    
+
 @pytest.fixture
 def clean_database(data_access):
     data_access.execute('''DROP TABLE IF EXISTS Address''', None)
@@ -135,16 +136,16 @@ def clean_database(data_access):
     data_access.execute('''DROP TABLE IF EXISTS Purchase''', None)
     data_access.execute('''DROP TABLE IF EXISTS Purchase_Product''', None)
     data_access.execute('''DROP TABLE IF EXISTS Status''', None)
-    
+
 
 @pytest.fixture
 def setup_test_data1(setup_database, data_access):
     data_access.execute('''
-        INSERT INTO Address (line_one, line_two, city) 
+        INSERT INTO Address (line_one, line_two, city)
             VALUES('Test Line One', 'Test Line Two', 'Test City')
     ''', None)
     data_access.execute('''
-        INSERT INTO Customer (first_name, last_name, email) 
+        INSERT INTO Customer (first_name, last_name, email)
             VALUES('Test First Name', 'Test Last Name', 'Test Email')
     ''', None)
     data_access.execute('''
@@ -172,8 +173,10 @@ def setup_test_data1(setup_database, data_access):
             VALUES(1, 1, 1)
     ''', None)
 
-@mock.patch('src.main.order_management.data.data_access.DataAccess', new_callable=MockDataAccess)
-def test_get_all_data(mock_data_access, query, clean_database, setup_database, setup_test_data1, data_access):
+
+@mock.patch('src.main.order_management.data.query.DataAccess',
+            new_callable=MockDataAccess)
+def test_get_all_data(mock_data_access, query, clean_database,
+                      setup_database, setup_test_data1, data_access):
     all_data = query.get_all_data()
     assert all_data == ("something")
-    

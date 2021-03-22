@@ -2,7 +2,7 @@
 import json
 import requests
 from collections import Counter
-from ..constants import WEBAY_URL
+from ..config import WEBAY_URL
 
 
 class RequestController:

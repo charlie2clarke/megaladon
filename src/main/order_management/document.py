@@ -5,7 +5,7 @@
 '''
 from collections import Counter
 from .pdf import Pdf
-from .constants import ADDRESS_LABELS_DIR, PACKAGING_LIST_DIR, PICKING_LIST_DIR
+from .config import ADDRESS_LABELS_DIR, PACKAGING_LIST_DIR, PICKING_LIST_DIR
 
 
 class Document:
