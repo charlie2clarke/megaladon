@@ -68,7 +68,8 @@ class MainApp(MDApp):
     def update_database(self):
         '''Uploads updated orders to database.
 
-        Invoked when app is quit.
+        Invoked when app is quit. Placed in main app because is needed to be called
+        on exit.
         '''
         self._query.update_database()
 
