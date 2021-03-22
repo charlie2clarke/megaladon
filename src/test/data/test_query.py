@@ -176,3 +176,4 @@ def setup_test_data1(setup_database, data_access):
 def test_get_all_data(mock_data_access, query, clean_database, setup_database, setup_test_data1, data_access):
     all_data = query.get_all_data()
     assert all_data == ("something")
+    

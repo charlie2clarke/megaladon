@@ -30,5 +30,3 @@ class Order:
         self.dispatched_date = "Date Now"
         self.completed_date = None
         self.status = status
-
-    

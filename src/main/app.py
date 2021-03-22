@@ -12,8 +12,7 @@ from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
 from order_management.constants import HELP_TEXT
-from order_management.presentation.order_management.order_management_view \
-    import OrderManagementScreen
+from order_management.presentation.order_management.order_management_view import OrderManagementScreen
 from order_management.presentation.components.dialog import Dialog
 from order_management.data.query import Query
 
@@ -62,13 +61,18 @@ class MainApp(MDApp):
         '''Renders dialog/popup with instructions for app usage.
 
         Is invoked when help icon in top right of screen is clicked.
+
+        Placed in main app because is apart of Toolbar which is a dynamic Kivy
+        widget, so the way that it is declared means it can be reused
+        across any future screens.
         '''
         self._dialog.render_dialog("Usage Guide:", HELP_TEXT, None, None)
 
     def update_database(self):
         '''Uploads updated orders to database.
 
-        Invoked when app is quit. Placed in main app because is needed to be called
+        Invoked when app is quit. Placed in main app because is needed
+        to be called
         on exit.
         '''
         self._query.update_database()

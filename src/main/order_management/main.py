@@ -16,7 +16,7 @@ class Main:
     '''Controls main logic.
 
     Instances of orders held make it the single source of truth.
-    ''''
+    '''
 
     def __init__(self):
         '''Inits Main

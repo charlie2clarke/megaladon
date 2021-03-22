@@ -16,7 +16,7 @@ def test_write_picking_list(pdf):
     ]
     picking_list_pdf = os.path.join(THIS_DIR, 'Picking List.pdf')
     pdf.write_picking_list(data, THIS_DIR)
-    assert os.path.exists(picking_list_pdf) == True
+    assert os.path.exists(picking_list_pdf) is True
     os.remove(picking_list_pdf)
     
 def test_write_packaging_list(pdf):
@@ -26,7 +26,7 @@ def test_write_packaging_list(pdf):
     order_id = 1
     packaging_list_pdf = os.path.join(THIS_DIR, 'Packaging List Test Name 1.pdf')
     pdf.write_packaging_list(date, address, items, order_id, THIS_DIR)
-    assert os.path.exists(packaging_list_pdf) == True
+    assert os.path.exists(packaging_list_pdf) is True
     os.remove(packaging_list_pdf)
 
 def test_write_address_label(pdf):
@@ -34,5 +34,5 @@ def test_write_address_label(pdf):
     order_id = 1
     address_label_pdf = os.path.join(THIS_DIR, 'Address Label Test Name 1.pdf')
     pdf.write_address_label(address, order_id, THIS_DIR)
-    assert os.path.exists(address_label_pdf) == True
+    assert os.path.exists(address_label_pdf) is True
     os.remove(address_label_pdf)
