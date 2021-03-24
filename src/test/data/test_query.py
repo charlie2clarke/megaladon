@@ -3,6 +3,7 @@ import sqlite3
 from sqlite3.dbapi2 import Connection, Cursor
 import pytest
 import mock
+from unittest.mock import patch
 from src.main.order_management.data.query import Query
 
 
@@ -177,6 +178,6 @@ def setup_test_data1(setup_database, data_access):
 @mock.patch('src.main.order_management.data.query.DataAccess',
             new_callable=MockDataAccess)
 def test_get_all_data(mock_data_access, query, clean_database,
-                      setup_database, setup_test_data1, data_access):
+                      setup_database, setup_test_data1):
     all_data = query.get_all_data()
     assert all_data == ("something")

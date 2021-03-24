@@ -38,8 +38,7 @@ class Main:
         if new_orders_list is not None:
             self._submit_new_orders(new_orders_list)
         all_data = self._query.get_all_data()
-        if all_data != []:
-            self._orders = self._order_controller.initialise_orders(all_data)
+        self._orders = self._order_controller.initialise_orders(all_data)
 
     def _load_new_orders(self):
         # Called every 60 seconds to get new orders.
@@ -104,8 +103,8 @@ class Main:
             A tuple with first item as title of dialog/popup
             and second item as contents of dialog/popup.
         '''
-        awaiting_orders = [order for order in self._orders if order.status ==
-                           'Awaiting']
+        awaiting_orders = [self._orders[order] for order in self._orders
+                           if self._orders[order].status == 'Awaiting']
         if len(awaiting_orders) == 0:
             dialog_title = 'There Are No Items To Be Picked'
             dialog_body = "There aren't any orders listed as awaiting."
