@@ -36,11 +36,15 @@ class OrderManagementScreen(Screen):
         if OrderManagementScreen._intialise_counter == 1:
             self._main = Main()
             self._dialog = Dialog()
-            self._data_table = DataTable()
+            column_data = [
+                ('No.', dp(30)),
+                ('Customer', dp(30)),
+                ('Order Date', dp(30)),
+                ('Status', dp(30)),
+                ('Total Gross', dp(30)),
+            ]
+            self._data_table = DataTable(column_data)
 
-            self._column_data = []
-            self._row_data = []
-            self._rows_checked = []
             self._order_table = None
             self._check_pressed = False
 
@@ -61,18 +65,10 @@ class OrderManagementScreen(Screen):
             # updating data in table, so deleting it and then adding a new one.
             self.ids.table_container.clear_widgets()
 
-        if reset_checks is not True:
-            # Only getting new data if is refreshing for new orders.
-            self._row_data = table_data
-            self._column_data = [
-                ('No.', dp(30)),
-                ('Customer', dp(30)),
-                ('Order Date', dp(30)),
-                ('Status', dp(30)),
-                ('Total Gross', dp(30)),
-            ]
+        row_data = table_data
+    
         self._order_table = self._data_table.create_data_table(
-            self._column_data, self._row_data, self.on_row_press,
+            row_data, self.on_row_press,
             self.on_check_press)
         self.ids.table_container.add_widget(self._order_table)
 
@@ -95,7 +91,7 @@ class OrderManagementScreen(Screen):
 
     def _clear_checked(self, status_updated):
         # Resets selected orders after one of the buttons has been clicked.
-        self._rows_checked = []
+        self._data_table.rows_checked = []
         self._disable_buttons()
         # If status is updated, create_order_table is invoked from there.
         if status_updated is False:
@@ -109,13 +105,13 @@ class OrderManagementScreen(Screen):
     def handle_packaging_click(self):
         '''Handler function when packaging list button is released.'''
         dialog_title, dialog_body = self._main.packaging_lists(
-            self._rows_checked)
+            self._data_table.rows_checked)
         self._dialog.render_dialog(dialog_title, dialog_body, None, None)
         self._clear_checked(False)
 
     def handle_address_click(self):
         '''Handler function when address label button is released.'''
-        dialog_title = self._main.address_labels(self._rows_checked)
+        dialog_title = self._main.address_labels(self._data_table.rows_checked)
         available_printers = self._main.get_printers()
         print_pdf = self._main.print_pdf()
         self._dialog.render_dialog(
@@ -127,7 +123,7 @@ class OrderManagementScreen(Screen):
 
     def handle_status_click(self):
         '''Handler function when update status button is released.'''
-        table_data = self._main.update_order_status(self._rows_checked)
+        table_data = self._main.update_order_status(self._data_table.rows_checked)
         self._create_order_table(table_data, True, False, None)
         self._clear_checked(True)
 
@@ -166,12 +162,12 @@ class OrderManagementScreen(Screen):
         # Workaround for bug in MDDataTable that invokes both the row and
         # check press on click of check.
         Clock.schedule_once(set_checked_press, 0.5)
-        if current_row in self._rows_checked:
-            self._rows_checked.remove(current_row)
+        if current_row in self._data_table.rows_checked:
+            self._data_table.rows_checked_remove(current_row)
         else:
-            self._rows_checked.append(current_row)
+            self._data_table.rows_checked_append(current_row)
 
-        if len(self._rows_checked) > 0:
+        if len(self._data_table.rows_checked) > 0:
             self._enable_buttons()
         else:
             self._disable_buttons()

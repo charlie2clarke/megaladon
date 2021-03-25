@@ -15,9 +15,26 @@ class DataTable:
     Have implemented as a class because Kivy requires reference to instance
     variables.
     '''
-    
+    def __init__(self, column_data):
+        self._column_data = column_data
+        self._row_data = []
+        self._rows_checked = []
+
+    @property
+    def rows_checked(self):
+        return self._rows_checked
+
+    @rows_checked.setter
+    def rows_checked(self, value):
+        self._rows_checked = value
+
+    def rows_checked_remove(self, item):
+        self._rows_checked.remove(item)
+
+    def rows_checked_append(self, item):
+        self._rows_checked.append(item)
+
     def create_data_table(self,
-                          column_data,
                           row_data,
                           on_row_press,
                           on_check_press
@@ -40,12 +57,15 @@ class DataTable:
         Returns:
             Instance of MDDataTable - must be assigned to instance variable.
         '''
+        if row_data is not None:
+            self._row_data = row_data
+
         table = MDDataTable(
             size_hint=(1, 0.85),
             check=True,
-            column_data=column_data,
-            row_data=row_data,
-            rows_num=len(row_data)
+            column_data=self._column_data,
+            row_data=self._row_data,
+            rows_num=len(self._row_data)
         )
         table.bind(on_row_press=on_row_press)
         table.bind(on_check_press=on_check_press)
