@@ -3,9 +3,12 @@ import sqlite3
 from sqlite3.dbapi2 import Connection, Cursor
 import pytest
 import mock
-from unittest.mock import patch
+from mock import PropertyMock
 from src.main.order_management.data.query import Query
 
+THIS_DIR = os.path.dirname(__file__)
+TEST_DATABASE = os.path.join(THIS_DIR, 'database',
+                                'TestOnlineStore.db')
 
 class MockDataAccess:
     def __init__(self):
@@ -175,9 +178,12 @@ def setup_test_data1(setup_database, data_access):
     ''', None)
 
 
-@mock.patch('src.main.order_management.data.query.DataAccess',
-            new_callable=MockDataAccess)
+@mock.patch('src.main.order_management.data.query.DataAccess', new_callable=PropertyMock)
 def test_get_all_data(mock_data_access, query, clean_database,
                       setup_database, setup_test_data1):
+    print("***************")
+    print(mock_data_access)
+    print(TEST_DATABASE)
+    mock_data_access.new_callable = MockDataAccess()
     all_data = query.get_all_data()
     assert all_data == ("something")

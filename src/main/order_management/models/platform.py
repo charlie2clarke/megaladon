@@ -13,5 +13,5 @@ class Platform:
         user_token: a string of API bearer token needed to
                     access online store via API.
     '''
-    platform = "ebay"
-    user_token = "abc123"
+    _platform_name = "ebay"
+    _user_token = "abc123"

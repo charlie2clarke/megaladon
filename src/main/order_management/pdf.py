@@ -12,6 +12,12 @@ from .constants import SENDER_DETAILS
 class Pdf:
     '''Uses FPDF library to create PDF files.'''
 
+    def __init__(self):
+        self._document = None
+        self._effective_width = None
+        self._column_width = None
+        self._text_height = None
+
     def _create_page(self):
         # Initialising here rather than in constructor because some methods
         # are invoked iteratively, so need to create a new page each time.

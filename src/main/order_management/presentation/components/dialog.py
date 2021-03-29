@@ -21,7 +21,7 @@ class Dialog:
     
     def __init__(self):
         '''Inits Dialog'''
-        self._print_pdf = None
+        self.print_pdf = None
 
     def close_dialog(self, obj):
         '''Closes the popup to resume normal usage.'''
@@ -38,7 +38,7 @@ class Dialog:
             item_clicked: string of dialog item selected
                           (will be printer name).
         '''
-        self._print_pdf(item_clicked.text, ADDRESS_LABELS_DIR)
+        self.print_pdf(item_clicked.text, ADDRESS_LABELS_DIR)
 
     def render_dialog(self, title, text, printers, print_pdf):
         '''Opens a dialog with specific contents.
@@ -55,7 +55,7 @@ class Dialog:
                        printer.
         '''
         if printers is not None:
-            self._print_pdf = print_pdf
+            self.print_pdf = print_pdf
             dialog_items = [OneLineAvatarIconListItem(text=str(
                 printer), on_release=self.handle_item_click) for
                 printer in printers]

@@ -10,37 +10,25 @@
 # from src.main.order_management.controllers.order_controller import OrderController
 
 
-# @pytest.fixture
-# def order_controller():
-#     return OrderController()
+# def MockAddress(Address):
+#     return Mock(Address)
 
+# def MockCustomer(Customer):
+#     return Mock(Customer)
 
-# @mock.patch('src.main.order_management.models.order.Order')
-# def mock_order(mock_order):
-#     return mock_order
+# def MockProduct(Product):
+#     return Mock(Product)
 
-
-# @mock.patch('src.main.order_management.models.product.Product')
-# def mock_product(mock_product):
-#     return mock_product
-
-
-# @mock.patch('src.main.order_management.models.customer.Customer')
-# def mock_customer(mock_customer):
-#     return mock_customer
-
-
-# @mock.patch('src.main.order_management.models.address.Address')
-# def mock_address(mock_address):
-#     return mock_address
+# def MockOrder(Order):
+#     return Mock(Order)
 
 
 # def setup_order(order_id, first_name, last_name, email, line_one, city, products, status):
-#     address = Mock(Address(line_one, None, city, None))
-#     customer = Mock(Customer(address, first_name, last_name, email))
+#     address = MockAddress(line_one, None, city, None)
+#     customer = MockCustomer(address, first_name, last_name, email)
 #     if products is not None:
-#         products = [Mock(Product(*product)) for product in products]
-#     return Mock(Order(order_id, products, customer, "Awaiting", "Date Now", None, , "1st Class"))
+#         products = [MockProduct(*product) for product in products]
+#     return MockOrder(order_id, products, customer, "Awaiting", "Date Now", None, "1st Class")
 
 
 # pytest.order_one = setup_order(1, 'Test First Name', 'Test Last Name', 'testemailone@something.com', 'Test Line One', 'Test City', 

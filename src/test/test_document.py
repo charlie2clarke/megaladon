@@ -23,7 +23,7 @@ picking_list_expected = [["Product ID", "Product Name", "Quantity", "Individual 
 picking_list_data = [
     ([test_order], picking_list_expected)
 ]
-@mock.patch('src.main.order_management.pdf.Pdf.write_picking_list')
+@mock.patch('src.main.order_management.document.Pdf.write_picking_list')
 @pytest.mark.parametrize("picking_list_orders, expected", picking_list_data)
 def test_create_picking_list(mock_pdf, document, picking_list_orders, expected):
     picking_list_contents = document.create_picking_list(picking_list_orders)
@@ -36,7 +36,7 @@ packaging_list_test_data = [
     (test_order, packaging_list_products_and_quantities, ([
      "Deliver To:", "Test First Name Test Last Name", "Test Line One", "Test City"], [['Item', 'Quantity'], ['Test Product 1', 2], ['Test Product 2', 4]]))
 ]
-@mock.patch('src.main.order_management.pdf.Pdf.write_packaging_list')
+@mock.patch('src.main.order_management.document.Pdf.write_packaging_list')
 @pytest.mark.parametrize("packaging_list_order, packaging_list_products_and_quantities, expected", packaging_list_test_data)
 def test_create_packaging_label(mock_pdf, document, packaging_list_order, packaging_list_products_and_quantities, expected):
     packaging_list_contents = document.create_packaging_list(
@@ -48,7 +48,7 @@ address_label_test_data = [
     (test_order, [
      "Test First Name Test Last Name", "Test Line One", "Test City"]),
 ]
-@mock.patch('src.main.order_management.pdf.Pdf.write_address_label')
+@mock.patch('src.main.order_management.document.Pdf.write_address_label')
 @pytest.mark.parametrize("address_label_order, expected", address_label_test_data)
 def test_create_address_label(mock_pdf, document, address_label_order, expected):
     address_label_contents = document.create_address_label(

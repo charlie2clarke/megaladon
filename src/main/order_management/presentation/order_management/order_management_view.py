@@ -30,7 +30,6 @@ class OrderManagementScreen(Screen):
         '''
         super(OrderManagementScreen, self).__init__(**kwargs)
         OrderManagementScreen._intialise_counter += 1
-
         # Class is instantiated once through python and once through Kivy, so
         # am making sure the costly database call is only invoked once.
         if OrderManagementScreen._intialise_counter == 1:
@@ -44,58 +43,55 @@ class OrderManagementScreen(Screen):
                 ('Total Gross', dp(30)),
             ]
             self._data_table = DataTable(column_data)
-
-            self._order_table = None
-            self._check_pressed = False
+            self.order_table = None
+            self.check_pressed = False
 
             # Is calling the intial creation of the table. Uses the
             # schedule_once function to await for creation of kivy
             # widgets so can add table to screen.
             table_data = self._main.get_initial_table_data()
             Clock.schedule_once(partial(
-                self._create_order_table, table_data, False, False))
+                self.create_order_table, table_data, False))
             # Asynchronus thread refreshing orders every minute.
-            Clock.schedule_interval(self._update_order_table, 60)
-
-    def _create_order_table(self, table_data, reset, reset_checks, clock):
+            Clock.schedule_interval(self.update_order_table, 60)
+        
+    def create_order_table(self, row_data, reset, clock):
         # Clock is an argument passed from the Clock.schedule_once call.
         if reset is True:
             # Deleting table if table with new data needs to be loaded.
             # KivyMDDataTable doesn't currently support dynamically
             # updating data in table, so deleting it and then adding a new one.
             self.ids.table_container.clear_widgets()
-
-        row_data = table_data
     
-        self._order_table = self._data_table.create_data_table(
+        self.order_table = self._data_table.create_data_table(
             row_data, self.on_row_press,
             self.on_check_press)
-        self.ids.table_container.add_widget(self._order_table)
+        self.ids.table_container.add_widget(self.order_table)
 
-    def _update_order_table(self, clock):
+    def update_order_table(self, clock):
         # Called every minute to get new order data, if
         # there are new orders then order table is created again.
         table_data = self._main.get_new_table_data()
         if table_data is not None:
-            self._create_order_table(table_data, True, False, None)
+            self.create_order_table(table_data, True, None)
 
-    def _enable_buttons(self):
+    def enable_buttons(self):
         self.ids.packaging_list_button.disabled = False
         self.ids.address_label_button.disabled = False
         self.ids.status_button.disabled = False
 
-    def _disable_buttons(self):
+    def disable_buttons(self):
         self.ids.packaging_list_button.disabled = True
         self.ids.address_label_button.disabled = True
         self.ids.status_button.disabled = True
 
-    def _clear_checked(self, status_updated):
+    def clear_checked(self, status_updated):
         # Resets selected orders after one of the buttons has been clicked.
         self._data_table.rows_checked = []
-        self._disable_buttons()
-        # If status is updated, create_order_table is invoked from there.
+        self.disable_buttons()
+        # If status is updated, create__order_table is invoked from there.
         if status_updated is False:
-            self._create_order_table(None, True, True, None)
+            self.create_order_table(None, True, None)
 
     def handle_picking_click(self):
         '''Handler function when picking list button is released.'''
@@ -107,7 +103,7 @@ class OrderManagementScreen(Screen):
         dialog_title, dialog_body = self._main.packaging_lists(
             self._data_table.rows_checked)
         self._dialog.render_dialog(dialog_title, dialog_body, None, None)
-        self._clear_checked(False)
+        self.clear_checked(False)
 
     def handle_address_click(self):
         '''Handler function when address label button is released.'''
@@ -119,13 +115,13 @@ class OrderManagementScreen(Screen):
             None,
             available_printers,
             print_pdf)
-        self._clear_checked(False)
+        self.clear_checked(False)
 
     def handle_status_click(self):
         '''Handler function when update status button is released.'''
         table_data = self._main.update_order_status(self._data_table.rows_checked)
-        self._create_order_table(table_data, True, False, None)
-        self._clear_checked(True)
+        self.create_order_table(table_data, True, None)
+        self.clear_checked(True)
 
     def on_row_press(self, instance_table, instance_row):
         '''Called when a table row is clicked.
@@ -138,7 +134,7 @@ class OrderManagementScreen(Screen):
         '''
         # Work around for bug in MDDataTable that invokes both row and
         # check press on click of check.
-        if self._check_pressed is False:
+        if self.check_pressed is False:
             # Getting the order id from the row as instance row only returns
             # the text of the column clicked.
             index = instance_row.Index
@@ -148,7 +144,7 @@ class OrderManagementScreen(Screen):
             dialog_title, dialog_body = self._main.get_order_details(order_id)
             self._dialog.render_dialog(dialog_title, dialog_body, None, None)
 
-    def on_check_press(self, instance_table, current_row):
+    def on_check_press(self, instance_table, instance_row):
         '''Called when the check box in the table row is checked.
 
         Args:
@@ -156,18 +152,21 @@ class OrderManagementScreen(Screen):
             instance_row: instance of row of MDDataTable.
         '''
         def set_checked_press(clock):
-            self._check_pressed = False
+            self.check_pressed = False
 
-        self._check_pressed = True
+        self.check_pressed = True
         # Workaround for bug in MDDataTable that invokes both the row and
         # check press on click of check.
         Clock.schedule_once(set_checked_press, 0.5)
-        if current_row in self._data_table.rows_checked:
-            self._data_table.rows_checked_remove(current_row)
+        if instance_row in self._data_table.rows_checked:
+            self._data_table.rows_checked.remove(instance_row)
         else:
-            self._data_table.rows_checked_append(current_row)
+            self._data_table.rows_checked.append(instance_row)
 
         if len(self._data_table.rows_checked) > 0:
-            self._enable_buttons()
+            self.enable_buttons()
         else:
-            self._disable_buttons()
+            self.disable_buttons()
+
+    def update_database(self):
+        self._main.update_database()

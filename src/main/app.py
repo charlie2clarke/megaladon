@@ -5,7 +5,7 @@ screens to be loaded. This module should be run as main:
 
     Typical usage example:
 
-    MainApp().run()
+    App().run()
 '''
 import atexit
 from kivymd.app import MDApp
@@ -17,7 +17,7 @@ from order_management.presentation.components.dialog import Dialog
 from order_management.data.query import Query
 
 
-class MainApp(MDApp):
+class App(MDApp):
     '''Creates a KivyMD app and adds the OrderManagementScreen.
 
     The main.kv file is loaded with the base styling and when run as main
@@ -28,7 +28,7 @@ class MainApp(MDApp):
     '''
 
     def __init__(self, **kwargs):
-        '''Inits MainApp
+        '''Inits App
 
         Args:
             **kwargs: used to inherit MDApp properties.
@@ -75,10 +75,11 @@ class MainApp(MDApp):
         to be called
         on exit.
         '''
-        self._query.update_database()
+        order_management_screen = self.root.children[0].manager.get_screen('order_management')
+        order_management_screen.update_database()
 
 
 if __name__ == "__main__":
-    MainApp().run()
-    main_app = MainApp()
-    atexit.register(main_app.update_database)  # Calls update_database on exit.
+    app = App()
+    app.run()
+    atexit.register(app.update_database)  # Calls update_database on exit.

@@ -23,8 +23,6 @@ class OrderController:
                         status updated.
     '''
 
-    updated_orders = []
-
     def __init__(self):
         '''Inits OrderController.
 
@@ -33,13 +31,22 @@ class OrderController:
         of order by id.
         '''
         self._orders = {}
+        self._updated_orders = []
 
     @property
     def orders(self):
-        '''Dictionary with id as key and Order instance as value.'''
+        '''Dictionary with id as key and Order instance as value.
+        
+        Have made this private because orders should be accessed
+        through Main.
+        '''
         return self._orders
 
-    def _get_total_price(self, ordered_items):
+    @property
+    def updated_orders(self):
+        return self._updated_orders
+
+    def get_total_price(self, ordered_items):
         # Will sum the price of all products in order
         # to retrieve total.
         total = 0
@@ -196,7 +203,7 @@ class OrderController:
             row_data.append(order_instance.created_date)
             row_data.append(order_instance.status)
             row_data.append(
-                '£' + str(self._get_total_price(order_instance.products)))
+                '£' + str(self.get_total_price(order_instance.products)))
             table_data.append(tuple(row_data))
 
         return table_data
@@ -243,28 +250,27 @@ class OrderController:
         and Dispatched to Completed.
 
         Args:
-            order: Order instance to update.
+            order: instance of Order.
 
         Returns:
             Same Order instance but with updated status.
         '''
         # Sets dispatched/completed date to date now.
         date_now = datetime.today().strftime('%Y-%m-%d')
-        order_instance = self._orders['order_' + order[0]]
-        if order[3] == 'Awaiting':
-            order_instance.status = 'Dispatched'
-            order_instance.dispatched_date = date_now
-        elif order[3] == 'Dispatched':
-            order_instance.status = 'Complete'
-            order_instance.completed_date = date_now
+        if order.status == 'Awaiting':
+            order.status = 'Dispatched'
+            order.dispatched_date = date_now
+        elif order.status == 'Dispatched':
+            order.status = 'Complete'
+            order.completed_date = date_now
         order_dict = {}
-        order_dict['order_' + order[0]
-                   ] = order_instance
+        order_dict['order_' + str(order.order_id)
+                   ] = order
         # Add instance of Order to updated_orders so can updates can
         # be uploaded to database on exit of app.
-        OrderController.updated_orders.append(order_dict)
+        self._updated_orders.append(order_dict)
 
-        product_and_quantities = self.get_product_quantities(order_instance)
+        product_and_quantities = self.get_product_quantities(order)
         outlook_email.update_status(
-            order_instance, product_and_quantities)
-        return order_instance
+            order, product_and_quantities)
+        return order

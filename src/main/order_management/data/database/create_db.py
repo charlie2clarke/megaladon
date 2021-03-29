@@ -54,8 +54,8 @@ def main():
     THIS_DIR = os.path.dirname(__file__)
     DATABASE = os.path.join(THIS_DIR, 'OnlineStore.db')
 
-    # Have created a separate table for addresses, because it is possible for
-    # customers to have more than one registered address
+    # ON DELETE CASCADE constraint means if record in parent table is deleted,
+    # then corresponding records in child table will automatically be deleted.
     sql_create_address_table = """ CREATE TABLE IF NOT EXISTS Address (
                                         id integer PRIMARY KEY AUTOINCREMENT,
                                         line_one text NOT NULL,

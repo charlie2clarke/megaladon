@@ -16,23 +16,9 @@ class DataTable:
     variables.
     '''
     def __init__(self, column_data):
-        self._column_data = column_data
-        self._row_data = []
-        self._rows_checked = []
-
-    @property
-    def rows_checked(self):
-        return self._rows_checked
-
-    @rows_checked.setter
-    def rows_checked(self, value):
-        self._rows_checked = value
-
-    def rows_checked_remove(self, item):
-        self._rows_checked.remove(item)
-
-    def rows_checked_append(self, item):
-        self._rows_checked.append(item)
+        self.column_data = column_data
+        self.row_data = []
+        self.rows_checked = []
 
     def create_data_table(self,
                           row_data,
@@ -52,20 +38,20 @@ class DataTable:
                       every item a string in corresponding order to column
                       names.
             on_row_press: callback function to bind when entire row is pressed.
-            on_check_press: callback function to bind when checkbox is pressed.
+            on_check_press: callback function to bind when checkbox is pressed+col
 
         Returns:
             Instance of MDDataTable - must be assigned to instance variable.
         '''
         if row_data is not None:
-            self._row_data = row_data
+            self.row_data = row_data
 
         table = MDDataTable(
             size_hint=(1, 0.85),
             check=True,
-            column_data=self._column_data,
-            row_data=self._row_data,
-            rows_num=len(self._row_data)
+            column_data=self.column_data,
+            row_data=self.row_data,
+            rows_num=len(self.row_data)
         )
         table.bind(on_row_press=on_row_press)
         table.bind(on_check_press=on_check_press)

@@ -19,8 +19,8 @@ class DataAccess:
 
         Creates connection to database with constant DATABASE file path.
         '''
-        self._conn = self._create_connection()
-        self._cur = self._conn.cursor()
+        self._connection = self._create_connection()
+        self._cursor = self._connection.cursor()
 
     def _create_connection(self):
         return sqlite3.connect(DATABASE)
@@ -39,8 +39,8 @@ class DataAccess:
             A tuple of rows retrieved from query.
         '''
         if data is None:
-            self._cur.execute(query)
+            self._cursor.execute(query)
         else:
-            self._cur.execute(query, data)
-        self._conn.commit()
-        return self._cur
+            self._cursor.execute(query, data)
+        self._connection.commit()
+        return self._cursor

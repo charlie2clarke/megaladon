@@ -247,7 +247,7 @@ class Query:
         ''', (self._new_order_pointer,))
         return queryset.fetchall()
 
-    def update_database(self):
+    def update_database(self, updated_orders):
         '''Uploads changes to order data to database on exit of app.
 
         Needs references of Order instances that have been updated so is
@@ -256,8 +256,7 @@ class Query:
         on exit of app. Does however mean that database isn't updated every
         time an order is changed uncessarily - improving performance.
         '''
-        from ..controllers.order_controller import OrderController
-
+        
         def get_status_id(status):
             # Finds the corresponding ID by status description.
             queryset = self._data_access.execute('''
@@ -270,7 +269,7 @@ class Query:
             ''', (status,)).fetchone()
             return int(queryset[0])
 
-        for order in OrderController.updated_orders:
+        for order in updated_orders:
             order_key = list(order.keys())[0]
             order_obj = order[order_key]
             status_id = get_status_id(order_obj.status)

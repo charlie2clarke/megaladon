@@ -21,14 +21,15 @@ class Main:
     def __init__(self):
         '''Inits Main
 
-        _orders is equal to _orders of OrderController because of the
+        orders is equal to orders of OrderController because of the
         associations of Main - reducing coupling.
         '''
         self._query = Query()
         self._request_controller = RequestController()
         self._order_controller = OrderController()
         self._document = Document()
-        self._orders = {}
+        self.orders = {}
+        self.updated_orders = []
         self._load_initial_orders()
 
     def _load_initial_orders(self):
@@ -38,7 +39,7 @@ class Main:
         if new_orders_list is not None:
             self._submit_new_orders(new_orders_list)
         all_data = self._query.get_all_data()
-        self._orders = self._order_controller.initialise_orders(all_data)
+        self.orders = self._order_controller.initialise_orders(all_data)
 
     def _load_new_orders(self):
         # Called every 60 seconds to get new orders.
@@ -91,8 +92,10 @@ class Main:
             A callback to get formatted order data for table.
         '''
         for order in orders_selected:
-            self._order_controller.update_order_status(order)
-        self._orders = self._order_controller._orders
+            order_instance = self.orders['order_' + order[0]]
+            self._order_controller.update_order_status(order_instance)
+        self.orders = self._order_controller.orders
+        self.updated_orders = self._order_controller.updated_orders
         return self._order_controller.get_table_data()
 
     def picking_list(self):
@@ -103,13 +106,13 @@ class Main:
             A tuple with first item as title of dialog/popup
             and second item as contents of dialog/popup.
         '''
-        awaiting_orders = [self._orders[order] for order in self._orders
-                           if self._orders[order].status == 'Awaiting']
+        awaiting_orders = [self.orders[order] for order in self.orders
+                           if self.orders[order].status == 'Awaiting']
         if len(awaiting_orders) == 0:
             dialog_title = 'There Are No Items To Be Picked'
             dialog_body = "There aren't any orders listed as awaiting."
         else:
-            self._document.create_picking_list(self._orders.values())
+            self._document.create_picking_list(self.orders.values())
             dialog_title = 'Picking list successfully created!'
             dialog_body = 'You can find the pdf under the picking_list' \
                           ' directory'
@@ -128,12 +131,12 @@ class Main:
         '''
         self._clear_directory(PACKAGING_LIST_DIR)
         for order in orders_selected:
-            order_instance = self._orders['order_' + order[0]]
+            order_instance = self.orders['order_' + order[0]]
             # Get dictionary with items as key and quantities as value.
             products_and_quantities = self._order_controller.\
                 get_product_quantities(order_instance)
             self._document.create_packaging_list(order_instance,
-                                                 products_and_quantities)
+                                                products_and_quantities)
         dialog_title = 'Packaging lists successfully created!'
         dialog_body = 'You can find the pdfs under the packaging_lists' \
                       ' directory'
@@ -152,7 +155,7 @@ class Main:
         # Clear any previously made address labels.
         self._clear_directory(ADDRESS_LABELS_DIR)
         for order in orders_selected:
-            order_instance = self._orders['order_' + order[0]]
+            order_instance = self.orders['order_' + order[0]]
             self._document.create_address_label(order_instance)
         dialog_title = 'The Address PDFs are in the address_labels directory' \
                        '. Select printer...'
@@ -185,3 +188,6 @@ class Main:
             A callback to 'print_pdf' method of Print.
         '''
         return Print.print_pdf
+
+    def update_database(self):
+        self._query.update_database(self.updated_orders)

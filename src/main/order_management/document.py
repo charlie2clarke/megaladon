@@ -13,7 +13,7 @@ class Document:
     def __init__(self):
         self._pdf = Pdf()
 
-    def _format_address(self, order):
+    def format_address(self, order):
         return [order.customer.first_name + ' ' + order.customer.last_name,
                 order.customer.address.line_one, order.customer.address.city]
 
@@ -73,14 +73,14 @@ class Document:
             of item details.
         '''
         # date array, address array, items array
-        address = self._format_address(order)
+        address = self.format_address(order)
         address.insert(0, 'Deliver To:')
         items = [[key, products_and_quantities[key]] for key in
                  products_and_quantities]
         items.insert(0, ['Item', 'Quantity'])
 
         self._pdf.write_packaging_list(order.created_date, address, items,
-                                       order.order_id, PACKAGING_LIST_DIR)
+                                      order.order_id, PACKAGING_LIST_DIR)
         return address, items
 
     def create_address_label(self, order):
@@ -92,7 +92,7 @@ class Document:
         Returns:
             An address list with a nested list for each line.
         '''
-        address = self._format_address(order)
+        address = self.format_address(order)
         self._pdf.write_address_label(address, order.order_id,
-                                      ADDRESS_LABELS_DIR)
+                                     ADDRESS_LABELS_DIR)
         return address
