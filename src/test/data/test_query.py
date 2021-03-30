@@ -1,33 +1,44 @@
-import os
+'''Tests Query class.
+
+The Query class utilises the DataAccess class to abstract the connection
+to an SQLite database. Therefore, I have created a MockDataAccess class
+that inherits from DataAccess and have then pointed the connection to
+my test database to not tamper with live database during testing.
+
+Pytest fixtures have been used as a clean way of invoking functions for
+setting up test database with required data. This means that in test functions
+just by passing the function name as a parameter it is invoked.
+
+The typical order for setting up test database
+(and order fixtures are invoked):
+1. clean database - clear existing tables and entries.
+2. setup database - create database with required tables.
+3. setup test data - populate test database with test data.
+'''
 import sqlite3
-from sqlite3.dbapi2 import Connection, Cursor
 import pytest
 import mock
 from src.main.order_management.data.query import Query
+from src.main.order_management.data.data_access import DataAccess
+from src.test.test_config import TEST_DATABASE
 
 
-class MockDataAccess:
+class MockDataAccess(DataAccess):
+    '''Creating a mock of DataAccess so that all behaviour is
+    inherited and then can change the database connected to.
+    '''
     def __init__(self):
-        self._conn = self._create_connection()
-        self._cur = self._conn.cursor()
+        super(MockDataAccess, self).__init__()
+        self._connection = self._create_connection()
 
     def _create_connection(self):
-        THIS_DIR = os.path.dirname(__file__)
-        TEST_DATABASE = os.path.join(THIS_DIR, 'database',
-                                     'TestOnlineStore.db')
         return sqlite3.connect(TEST_DATABASE)
-
-    def execute(self, query, data):
-        if data is None:
-            self._cur.execute(query)
-        else:
-            self._cur.execute(query, data)
-        self._conn.commit()
-        return self._cur
 
 
 # Creating global instance rather than using pytest fixture
 # so can use in return_value and only create one database connection.
+# pytest fixtures create a new instance every time they are passed as
+# a parameter.
 mock_data_access = MockDataAccess()
 
 
@@ -38,6 +49,7 @@ def query():
 
 @pytest.fixture
 def setup_database():
+    # Creating tables in TestOnlineStore.
     mock_data_access.execute('''
         CREATE TABLE IF NOT EXISTS Address (
             id integer PRIMARY KEY AUTOINCREMENT,
@@ -128,8 +140,10 @@ def setup_database():
             PRIMARY KEY (purchase_id, product_id)
     );''', None)
 
+
 @pytest.fixture
 def clean_database():
+    # Deleting all tables and records in TestOnlineStore.
     mock_data_access.execute('''DROP TABLE IF EXISTS Address''', None)
     mock_data_access.execute('''DROP TABLE IF EXISTS Customer''', None)
     mock_data_access.execute('''DROP TABLE IF EXISTS Customer_Address''', None)
@@ -143,7 +157,9 @@ def clean_database():
 
 @pytest.fixture
 def setup_test_data1(setup_database):
-    # Order entry 1
+    # Populating TestOnlineStore
+
+    # Order entry 1:
     mock_data_access.execute('''
         INSERT INTO Address (line_one, line_two, city)
             VALUES('Test Line One', 'Test Line Two', 'Test City')
@@ -161,7 +177,8 @@ def setup_test_data1(setup_database):
             VALUES('1st Class')
     ''', None)
     mock_data_access.execute('''
-        INSERT INTO Product (product_name, individual_price, stock_count, aisle, shelf)
+        INSERT INTO Product (product_name, individual_price, stock_count,
+                             aisle, shelf)
             VALUES('Test Product One', 100.00, 2, 3, 4)
     ''', None)
     mock_data_access.execute('''
@@ -177,7 +194,7 @@ def setup_test_data1(setup_database):
             VALUES(1, 1, 1)
     ''', None)
 
-    # Order entry 2
+    # Order entry 2:
     mock_data_access.execute('''
         INSERT INTO Address (line_one, line_two, city)
             VALUES('Test Line One', 'Test Line Two', 'Test City')
@@ -195,7 +212,8 @@ def setup_test_data1(setup_database):
             VALUES('2nd Class')
     ''', None)
     mock_data_access.execute('''
-        INSERT INTO Product (product_name, individual_price, stock_count, aisle, shelf)
+        INSERT INTO Product (product_name, individual_price, stock_count,
+                             aisle, shelf)
             VALUES('Test Product Two', 100.00, 2, 4, 6)
     ''', None)
     mock_data_access.execute('''
@@ -212,78 +230,90 @@ def setup_test_data1(setup_database):
     ''', None)
 
 
-@mock.patch('src.main.order_management.data.query.DataAccess', return_value=mock_data_access)
+@pytest.mark.happy
+@mock.patch('src.main.order_management.data.query.DataAccess',
+            return_value=mock_data_access)
 def test_get_all_data(mock_data_access, clean_database,
                       setup_database, setup_test_data1):
+    '''Test case to see if expected records are retrieved from main
+    select query.
+    '''
     query = Query()
     all_data = query.get_all_data()
     assert all_data == [
-                        (1,
-                         'Test Product One',
-                         1,
-                         'Test First Name One',
-                         'Test Last Name One',
-                         'Test Email',
-                         'Test Line One',
-                         'Test Line Two',
-                         'Test City',
-                         None,
-                         'Awaiting',
-                         'Date Now',
-                         None,
-                         None,
-                         '1st Class',
-                         100.0,
-                         1,
-                         3,
-                         4),
+        (1,
+         'Test Product One',
+         1,
+         'Test First Name One',
+         'Test Last Name One',
+         'Test Email',
+         'Test Line One',
+         'Test Line Two',
+         'Test City',
+         None,
+         'Awaiting',
+         'Date Now',
+         None,
+         None,
+         '1st Class',
+         100.0,
+         1,
+         3,
+         4),
 
-                        (2,
-                         'Test Product Two',
-                         1,
-                         'Test First Name Two',
-                         'Test Last Name Two',
-                         'Test Email',
-                         'Test Line One',
-                         'Test Line Two',
-                         'Test City',
-                         None,
-                         'Awaiting',
-                         'Date Now',
-                         None,
-                         None,
-                         '2nd Class',
-                         100.0,
-                         2,
-                         4,
-                         6)
-                       ]
+        (2,
+         'Test Product Two',
+         1,
+         'Test First Name Two',
+         'Test Last Name Two',
+         'Test Email',
+         'Test Line One',
+         'Test Line Two',
+         'Test City',
+         None,
+         'Awaiting',
+         'Date Now',
+         None,
+         None,
+         '2nd Class',
+         100.0,
+         2,
+         4,
+         6)
+    ]
 
 
-@mock.patch('src.main.order_management.data.query.DataAccess', return_value=mock_data_access)
+@pytest.mark.happy
+@mock.patch('src.main.order_management.data.query.DataAccess',
+            return_value=mock_data_access)
 def test_get_new_data(mock_data_access, clean_database,
                       setup_database, setup_test_data1):
+    '''Test case to see if only new records are retrieved.
+
+    Should only return the second entry because am setting the order pointer
+    (row index at which new records can be searched from) to 2.
+    '''
     query = Query()
     query._new_order_pointer = 2
     new_data = query.get_new_data()
     assert new_data == [
-                        (2,
-                         'Test Product Two',
-                         1,
-                         'Test First Name Two',
-                         'Test Last Name Two',
-                         'Test Email',
-                         'Test Line One',
-                         'Test Line Two',
-                         'Test City',
-                         None,
-                         'Awaiting',
-                         'Date Now',
-                         None,
-                         None,
-                         '2nd Class',
-                         100.0,
-                         2,
-                         4,
-                         6)
-                       ]
+        (2,
+         'Test Product Two',
+         1,
+         'Test First Name Two',
+         'Test Last Name Two',
+         'Test Email',
+         'Test Line One',
+         'Test Line Two',
+         'Test City',
+         None,
+         'Awaiting',
+         'Date Now',
+         None,
+         None,
+         '2nd Class',
+         100.0,
+         2,
+         4,
+         6)
+    ]

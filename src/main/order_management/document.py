@@ -80,7 +80,7 @@ class Document:
         items.insert(0, ['Item', 'Quantity'])
 
         self._pdf.write_packaging_list(order.created_date, address, items,
-                                      order.order_id, PACKAGING_LIST_DIR)
+                                       order.order_id, PACKAGING_LIST_DIR)
         return address, items
 
     def create_address_label(self, order):
@@ -94,5 +94,5 @@ class Document:
         '''
         address = self.format_address(order)
         self._pdf.write_address_label(address, order.order_id,
-                                     ADDRESS_LABELS_DIR)
+                                      ADDRESS_LABELS_DIR)
         return address

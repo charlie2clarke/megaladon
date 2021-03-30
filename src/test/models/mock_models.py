@@ -1,32 +1,52 @@
-class Address:
-    def __init__(self, line_one, city):
-        self.line_one = line_one
-        self.city = city
+'''Creating mock base classes using inheritance.
+
+This implementation means that the actual/main classes
+aren't instantiated. Inheritance has been used to keep
+methods and attributes from original classes so that
+instances created are a true reflection of the base ones.
+'''
+from src.main.order_management.models.order import Order
+from src.main.order_management.models.product import Product
+from src.main.order_management.models.customer import Customer
+from src.main.order_management.models.address import Address
 
 
-class Customer:
-    def __init__(self, address, first_name, last_name, email):
-        self.address = address
-        self.first_name = first_name
-        self.last_name = last_name
-        self.email = email
+class MockAddress(Address):
+    pass
 
 
-class Product:
-    def __init__(self, product_id, product_name, price, aisle, shelf):
-        self.product_id = product_id
-        self.product_name = product_name
-        self.price = price
-        self.aisle = aisle
-        self.shelf = shelf
+class MockCustomer(Customer):
+    pass
 
 
-class Order:
-    def __init__(self, order_id, customer, products, created_date, status):
-        self.order_id = order_id
-        self.customer = customer
-        self.products = products
-        self.created_date = created_date
-        self.dispatched_date = "Date Now"
-        self.completed_date = None
-        self.status = status
+class MockOrder(Order):
+    pass
+
+
+class MockProduct(Product):
+    pass
+
+
+class MockOrder(Order):
+    pass
+
+
+def setup_order(order_id,
+                first_name,
+                last_name,
+                email,
+                line_one,
+                city,
+                products,
+                status,
+                dispatched_date):
+    '''Helper function to create instances of mock models.
+
+    Only includes parameters that have been necessary for tests.
+    '''
+    address = MockAddress(line_one, None, city, None)
+    customer = MockCustomer(address, first_name, last_name, email)
+    if products is not None:
+        products = [MockProduct(*product) for product in products]
+    return MockOrder(order_id, products, customer, status, "Date Now",
+                     dispatched_date, None, "1st Class")

@@ -12,7 +12,7 @@ from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
 from order_management.constants import HELP_TEXT
-from order_management.presentation.order_management.order_management_view import OrderManagementScreen
+from order_management.presentation.order_management_screen.order_management_view import OrderManagementScreen
 from order_management.presentation.components.dialog import Dialog
 from order_management.data.query import Query
 
