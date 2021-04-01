@@ -5,7 +5,7 @@ All public methods are invoked from view in presentation layer.
 import os
 import shutil
 import asyncio
-from .config import PACKAGING_LIST_DIR, ADDRESS_LABELS_DIR
+from .config import PACKAGING_LIST_DIR, ADDRESS_LABELS_DIR, PICKING_LIST_DIR
 from .controllers.request_controller import RequestController
 from .controllers.order_controller import OrderController
 from .data.query import Query
@@ -108,6 +108,7 @@ class Main:
             A tuple with first item as title of dialog/popup
             and second item as contents of dialog/popup.
         '''
+        self._clear_directory(PICKING_LIST_DIR)
         awaiting_orders = [self.orders[order] for order in self.orders
                            if self.orders[order].status == 'Awaiting']
         if len(awaiting_orders) == 0:

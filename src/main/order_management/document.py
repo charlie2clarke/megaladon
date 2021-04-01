@@ -31,7 +31,8 @@ class Document:
         ordered_items = [product for order in awaiting_orders for product
                          in order.products]
         # Sorting by aisle and shelf so is in order for picker.
-        ordered_items.sort(key=lambda product: (product.aisle, product.shelf))
+        ordered_items.sort(key=lambda product: (product.aisle, product.shelf),
+                           reverse=True)
 
         grouped_items = []
         grouped_items_position = -1
