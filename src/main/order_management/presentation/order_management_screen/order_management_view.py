@@ -2,6 +2,7 @@
 
 Kivy automatically relates file based on widget name added to screenmanager.
 '''
+import asyncio
 from kivy.uix.screenmanager import Screen
 from kivy.metrics import dp
 from kivy.clock import Clock
@@ -54,7 +55,7 @@ class OrderManagementScreen(Screen):
                 self.create_order_table, table_data, False))
             # Asynchronus thread refreshing orders every minute.
             Clock.schedule_interval(self.update_order_table, 60)
-        
+
     def create_order_table(self, row_data, reset, clock):
         # Clock is an argument passed from the Clock.schedule_once call.
         if reset is True:
@@ -62,7 +63,7 @@ class OrderManagementScreen(Screen):
             # KivyMDDataTable doesn't currently support dynamically
             # updating data in table, so deleting it and then adding a new one.
             self.ids.table_container.clear_widgets()
-    
+
         self.order_table = self._data_table.create_data_table(
             row_data, self.on_row_press,
             self.on_check_press)
@@ -119,7 +120,9 @@ class OrderManagementScreen(Screen):
 
     def handle_status_click(self):
         '''Handler function when update status button is released.'''
-        table_data = self._main.update_order_status(self._data_table.rows_checked)
+        table_data = self._main.update_order_status(
+            self._data_table.rows_checked)
+        # await asyncio.wait(table_data)
         self.create_order_table(table_data, True, None)
         self.clear_checked(True)
 

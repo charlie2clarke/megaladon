@@ -256,7 +256,7 @@ class Query:
         on exit of app. Does however mean that database isn't updated every
         time an order is changed uncessarily - improving performance.
         '''
-        
+
         def get_status_id(status):
             # Finds the corresponding ID by status description.
             queryset = self._data_access.execute('''

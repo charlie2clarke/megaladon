@@ -9,7 +9,7 @@ def update_status(order, products_and_quantities):
     '''Sends email using Outlook with details of order status.
 
     Args:
-        order_instance: instance of Order to notify on status update.
+        order: instance of Order to notify on status update.
         products_and_quantities: dictionary with product as key and
         quantity as value.
 
@@ -19,10 +19,12 @@ def update_status(order, products_and_quantities):
     mail_subject = 'Your order has been ' + order.status.lower()
     recipient_name = order.customer.first_name + \
         ' ' + order.customer.last_name
-    ordered_items = ["  " + str(key) + ' * ' + str(products_and_quantities[key])
+    ordered_items = ["  " + str(key) + ' * ' + str(
+        products_and_quantities[key])
                      for key in products_and_quantities]
     ordered_items = '\n'.join(ordered_items)
-    date = order.dispatched_date if order.status == 'Dispatched' else order.completed_date
+    date = order.dispatched_date if order.status == 'Dispatched' else \
+        order.completed_date
     mail_body = 'Dear {},\n\n'\
                 'Your order of:\n'\
                 '{}\n\n'\
@@ -38,7 +40,9 @@ def update_status(order, products_and_quantities):
         outlook_msg.Body = mail_body
 
         outlook_msg.Display()
+        print("PRINTED")
     except Exception as e:
-        print("Error occured trying to open outlook email - this could be because you have alerts open. More details: " + str(e))
+        print("Error occured trying to open outlook email - this could "
+              "be because you have alerts open. More details: " + str(e))
         raise
     return mail_subject, mail_body

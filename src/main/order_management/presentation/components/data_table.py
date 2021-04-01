@@ -31,14 +31,11 @@ class DataTable:
         all rows on one page due to buggy behaviour.
 
         Args:
-            column_data: an array of column headings with a tuple for each
-                         column with first item as string of column name
-                         and second item as column width.
             row_data: an array of row data, each row is a tuple with
                       every item a string in corresponding order to column
                       names.
             on_row_press: callback function to bind when entire row is pressed.
-            on_check_press: callback function to bind when checkbox is pressed+col
+            on_check_press: callback function to bind when checkbox is pressed.
 
         Returns:
             Instance of MDDataTable - must be assigned to instance variable.

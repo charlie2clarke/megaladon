@@ -8,11 +8,15 @@ screens to be loaded. This module should be run as main:
     App().run()
 '''
 import atexit
+import os
+import sys
+from kivy.resources import resource_add_path
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
 from order_management.constants import HELP_TEXT
-from order_management.presentation.order_management_screen.order_management_view import OrderManagementScreen
+from order_management.presentation.order_management_screen. \
+    order_management_view import OrderManagementScreen
 from order_management.presentation.components.dialog import Dialog
 from order_management.data.query import Query
 
@@ -72,14 +76,16 @@ class App(MDApp):
         '''Uploads updated orders to database.
 
         Invoked when app is quit. Placed in main app because is needed
-        to be called
-        on exit.
+        to be called on exit.
         '''
-        order_management_screen = self.root.children[0].manager.get_screen('order_management')
+        order_management_screen = self.root.children[0].manager.get_screen(
+            'order_management')
         order_management_screen.update_database()
 
 
 if __name__ == "__main__":
+    if hasattr(sys, '_MEIPASS'):
+        resource_add_path(os.path.join(sys._MEIPASS))
     app = App()
     app.run()
     atexit.register(app.update_database)  # Calls update_database on exit.

@@ -4,12 +4,14 @@ All public methods are invoked from view in presentation layer.
 '''
 import os
 import shutil
+import asyncio
 from .config import PACKAGING_LIST_DIR, ADDRESS_LABELS_DIR
 from .controllers.request_controller import RequestController
 from .controllers.order_controller import OrderController
 from .data.query import Query
 from .document import Document
 from .print import Print
+from . import outlook_email
 
 
 class Main:
@@ -136,7 +138,7 @@ class Main:
             products_and_quantities = self._order_controller.\
                 get_product_quantities(order_instance)
             self._document.create_packaging_list(order_instance,
-                                                products_and_quantities)
+                                                 products_and_quantities)
         dialog_title = 'Packaging lists successfully created!'
         dialog_body = 'You can find the pdfs under the packaging_lists' \
                       ' directory'
@@ -190,4 +192,5 @@ class Main:
         return Print.print_pdf
 
     def update_database(self):
+        '''Invokes updating of database with dirty data when app is exited.'''
         self._query.update_database(self.updated_orders)

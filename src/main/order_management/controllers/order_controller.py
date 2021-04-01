@@ -36,7 +36,7 @@ class OrderController:
     @property
     def orders(self):
         '''Dictionary with id as key and Order instance as value.
-        
+
         Have made this private because orders should be accessed
         through Main.
         '''
@@ -112,7 +112,8 @@ class OrderController:
 
                 for j in range(quantity):
                     products.append(Product(product_id=order_queryset[i-1][16],
-                                            product_name=order_queryset[i-1][1],
+                                            product_name=order_queryset[i-1]
+                                                                       [1],
                                             price=order_queryset[i-1][15],
                                             aisle=order_queryset[i-1][17],
                                             shelf=order_queryset[i-1][18]))

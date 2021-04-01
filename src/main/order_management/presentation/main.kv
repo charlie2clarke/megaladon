@@ -2,6 +2,8 @@
 #:include order_management/presentation/order_management_screen/order_management_ui.kv
 # Having to use v1.11.0 because of bug relating to MDDataTable
 
+# Toolbar is made a dynamic widget so that when a new screen is added, the toolbar can be
+# incorporated just by doing Toolbar:
 <Toolbar@AnchorLayout>:
     AnchorLayout:
         anchor_x: 'center'
