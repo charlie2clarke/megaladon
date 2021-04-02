@@ -30,11 +30,11 @@ test_order = setup_order(1, "Test First Name", "Test Last Name",
                          "Awaiting", "Test Date")
 
 
-picking_list_expected = [["Product ID", "Product Name", "Quantity",
-                          "Individual Price", "Aisle", "Shelf"],
-                         [3, "Test Product Three", 1, 22.22, 1, 1],
-                         [1, "Test Product One", 2, 99.99, 1, 2],
-                         [2, 'Test Product Two', 1, 11.11, 2, 4]]
+picking_list_expected = [['Product ID', 'Product Name', 'Quantity',
+                          'Individual Price', 'Aisle', 'Shelf'],
+                         [2, 'Test Product Two', 1, 11.11, 2, 4],
+                         [1, 'Test Product One', 2, 99.99, 1, 2],
+                         [3, 'Test Product Three', 1, 22.22, 1, 1]]
 
 
 # Have formatted test data like below to improve readability because there's

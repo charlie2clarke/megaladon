@@ -4,7 +4,6 @@ All public methods are invoked from view in presentation layer.
 '''
 import os
 import shutil
-import asyncio
 from .config import PACKAGING_LIST_DIR, ADDRESS_LABELS_DIR, PICKING_LIST_DIR
 from .controllers.request_controller import RequestController
 from .controllers.order_controller import OrderController
