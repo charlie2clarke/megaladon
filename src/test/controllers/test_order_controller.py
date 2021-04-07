@@ -49,8 +49,8 @@ pytest.order_two = setup_order(1, 'Test First Name', 'Test Last Name',
 
 @pytest.mark.happy
 @pytest.mark.parametrize("order, expected", [
-    (pytest.order_one.products, 233.30999999999997),
-    (pytest.order_two.products, 6.998)
+    (pytest.order_one.products, 233.31),
+    (pytest.order_two.products, 7.00)
 ])
 def test_get_total_price(order_controller, order, expected):
     '''Test case for getting total price for a given order.
@@ -60,6 +60,8 @@ def test_get_total_price(order_controller, order, expected):
 
     Second test case includes products with non-expected units of price.
     I.e. to more than two d.p. and a minus.
+
+    Refs 10-12 in report.
     '''
     total_price = order_controller.get_total_price(order)
     assert total_price == expected
@@ -99,6 +101,8 @@ def test_initialise_orders(order_controller):
     order.
 
     Scenario of no orders isn't possible because of logic in Main.
+
+    Refs 14-16 in report.
     '''
     initialise_orders_test_data = [
         (1, 'Oppo Find X2 Pro', 1, 'George', 'Clooney',
@@ -155,6 +159,8 @@ def test_get_table_data(mock__get_total_price, order_controller, expected):
 
     Order instances passed will have already gone through validation so
     this single test case is representative of all scenarios.
+
+    Ref 17 in report.
     '''
     order_controller._orders = {'order_1': pytest.order_one}
     table_data = order_controller.get_table_data()
@@ -182,6 +188,8 @@ def test_get_order_details(mock_get_product_quantities,
     Similar to above, the passed Order instance would have
     already have been validated so this single test case
     is representative of all scenarios.
+
+    Ref 18 in report.
     '''
     order_controller._orders = {'order_1': pytest.order_two}
     order_details = order_controller.get_order_details(order_id)
@@ -203,6 +211,8 @@ def test_update_order_status(mock_email, order_controller, order, expected):
     Dispatched -> Complete
 
     Complete order will pass through function unaffected.
+
+    Refs 19-20 in report.
     '''
     updated_order = order_controller.update_order_status(order)
     assert updated_order.status == expected

@@ -1,4 +1,4 @@
-'''Peforms logic for retrieving data of new orders from Webay API.'''
+'''Performs logic for retrieving data of new orders from Webay API.'''
 import json
 import requests
 from collections import Counter

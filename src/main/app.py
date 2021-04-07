@@ -10,7 +10,6 @@ screens to be loaded. This module should be run as main:
 import atexit
 import os
 import sys
-from kivy.resources import resource_add_path
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
@@ -84,8 +83,6 @@ class App(MDApp):
 
 
 if __name__ == "__main__":
-    if hasattr(sys, '_MEIPASS'):
-        resource_add_path(os.path.join(sys._MEIPASS))
     app = App()
     app.run()
     atexit.register(app.update_database)  # Calls update_database on exit.

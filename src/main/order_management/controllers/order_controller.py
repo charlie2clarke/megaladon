@@ -53,7 +53,7 @@ class OrderController:
 
         for product in ordered_items:
             total = total + product.price
-        return total
+        return round(total, 2)
 
     def get_product_quantities(self, order):
         '''For an instance of Order groups items and finds quantities.
